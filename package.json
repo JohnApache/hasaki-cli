@@ -1,0 +1,42 @@
+{
+  "name": "hasaki-cli",
+  "version": "1.0.0",
+  "description": "自动化构建react, vue, jquery, js类库, koa/express/egg项目, node-plugin, typescript 等等多种项目结构初始化",
+  "main": "index.js",
+  "directories": {
+    "lib": "lib"
+  },
+  "dependencies": {
+    "@types/ejs": "^2.6.3",
+    "@types/inquirer": "^6.5.0",
+    "@types/node": "^12.7.3",
+    "chalk": "^2.4.2",
+    "commander": "^3.0.1",
+    "ejs": "^2.6.2",
+    "inquirer": "^7.0.0",
+    "ora": "^3.4.0"
+  },
+  "devDependencies": {
+    "@types/chai": "^4.2.0",
+    "@types/mocha": "^5.2.7",
+    "chai": "^4.2.0",
+    "mocha": "^6.2.0",
+    "ts-node": "^8.3.0",
+    "typescript": "^3.6.2"
+  },
+  "scripts": {
+    "test": "mocha --require ts-node/register 'test/**/*.{ts,tsx}' -t 5000",
+    "build": "tsc --build"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/JohnApache/hasaki-cli.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/JohnApache/hasaki-cli/issues"
+  },
+  "homepage": "https://github.com/JohnApache/hasaki-cli#readme"
+}
