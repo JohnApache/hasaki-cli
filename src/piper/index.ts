@@ -62,10 +62,7 @@ export const FilePiper = (
                         Copy(filepath, targetFile, onTaskEnd);
                     },
                     () => {
-                        setImmediate(() => {
-                            count--;
-                            onTaskEnd();
-                        })
+                        setImmediate(onTaskEnd)
                     }
                 )
                 
