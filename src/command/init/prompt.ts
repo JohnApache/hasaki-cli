@@ -1,10 +1,5 @@
-import templates from '../../config/template';
+import {GetTemplates, Template} from '../../config/template';
 import inquirer, {Question, Answers} from 'inquirer';
-
-type Template = {
-    templateName: string,
-    remoteAddress: string,
-}
 
 interface TemplateAnswer extends Answers {
     template: Template
@@ -24,6 +19,7 @@ export const ChooseTemplatePrompt = async (): Promise<Template> => {
         name: 'template',
         message: 'choose a template you want.',
         choices() {
+            const templates = GetTemplates();
             return templates.map(t => {
                 return {
                     name: t.templateName,

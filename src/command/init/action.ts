@@ -1,6 +1,6 @@
 import fs from 'fs';
 import chalk from 'chalk';
-
+import path from 'path';
 
 import Analyse from '../../piper/analyse';
 import Download from './download';
@@ -10,14 +10,23 @@ import {FileCleanner, FilePiper} from '../../piper';
 import {ChooseTemplatePrompt, ConfirmDeletePrompt, CreatePrompt} from './prompt';
 import {TEMPLATE_REPO_TMP_DIRNAME} from '../../config/definition';
 import { Question } from 'inquirer';
+import { GetTemplates } from '../../config/template';
 
 const Exit = () => {
     process.exit(1);
 }
+const CheckTemplate = () => {
+    const templates = GetTemplates();
+    return templates && templates.length > 0;
+}
 
-const BeforeInitHandle = async (projectName: string): Promise<void> => {
-    const targetPath = `${process.cwd()}/${projectName}`;
-    const tmpRepoPath = `${process.cwd()}/${TEMPLATE_REPO_TMP_DIRNAME}`;
+const BeforeInitHandle = async (projectName: string, options: ActionOptions): Promise<void> => {
+    if(!CheckTemplate()) {
+        console.log(chalk.red.bold('current template list is empty.'));
+        return Exit();
+    }
+    const targetPath = path.resolve(process.cwd(), options.outDir || '', projectName);
+    const tmpRepoPath = path.resolve(process.cwd(), options.config || TEMPLATE_REPO_TMP_DIRNAME);
     if(fs.existsSync(tmpRepoPath)) {
         const ld = CreateLoading('clean tmp template gitrepo ...');
         try {
@@ -68,18 +77,36 @@ const RepoPromptHandle = async (questions: Array<Question>): Promise<object> => 
     return parseData;
 }
 
-const RepoPipeHandle = async (source: string, dest: string): Promise<void> => {
+const RepoPipeHandle = async (source: string, dest: string, option: ActionOptions): Promise<void> => {
     const analyseResult = Analyse(source);
     const parseData = await RepoPromptHandle(analyseResult.question);
     const ld = CreateLoading(`tmp repo pipe to ${chalk.blue.underline(dest)}...`);
     try {
         ld.start();
+        const parseExclude = analyseResult.parseExclude;
+        const parseInclude = analyseResult.parseInclude;
+        const ignore = analyseResult.ignore;
 
+        if(option.exclude) {
+            option.exclude.split(',').forEach(e => {
+                parseExclude.push(new RegExp(e))
+            });
+        }
+        if(option.include) {
+            option.include.split(',').forEach(e => {
+                parseInclude.push(new RegExp(e));
+            });
+        }
+        if(option.ignore) {
+            option.ignore.split(',').forEach(e => {
+                ignore.push(new RegExp(e));
+            });
+        }
         await FilePiper(source, dest, {
             parseData,
-            parseExclude: analyseResult.parseExclude,
-            parseInclude: analyseResult.parseInclude,
-            ignore: analyseResult.ignore
+            parseExclude,
+            parseInclude,
+            ignore
         });
 
         ld.succeed('pipe handle success!');
@@ -90,15 +117,23 @@ const RepoPipeHandle = async (source: string, dest: string): Promise<void> => {
     }
 }
 
-const InitAction = async (projectName: string): Promise<void> => {
-    const targetPath = `${process.cwd()}/${projectName}`;
-    const tmpRepoPath = `${process.cwd()}/${TEMPLATE_REPO_TMP_DIRNAME}`;
-    await BeforeInitHandle(projectName);
+type ActionOptions = {
+    outDir?: string,
+    ignore?: string,
+    exclude?: string,
+    include?: string,
+    config?: string,
+}
+
+const InitAction = async (projectName: string, options: ActionOptions): Promise<void> => {
+    const targetPath = path.resolve(process.cwd(), options.outDir || '', projectName);
+    const tmpRepoPath = path.resolve(process.cwd(), options.config || TEMPLATE_REPO_TMP_DIRNAME);
+    await BeforeInitHandle(projectName, options);
     const template = await ChooseTemplatePrompt();
     await DownloadHandle(template.remoteAddress, tmpRepoPath);
-    await RepoPipeHandle(tmpRepoPath, targetPath);
+    await RepoPipeHandle(tmpRepoPath, targetPath, options);
     await FileCleanner(tmpRepoPath);
-    console.log(`${projectName} in success!`);
+    console.log(`create ${projectName} success!`);
 }
 
 export default InitAction;

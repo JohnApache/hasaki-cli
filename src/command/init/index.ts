@@ -1,13 +1,12 @@
-import { CommanderStatic } from "commander";
+import { CommanderStatic, Command } from "commander";
 import InitAction from './action';
-
+import InitOption from './option';
 const InitCommand = (program: CommanderStatic) :void => {
-    program
-        .command('init <projectName>')
-        .alias('i')
+    const command = program.command('init <projectName>').alias('i');
+    InitOption(command) 
         .description('quickly initialize a project by selecting a template.')
-        .action((projectName: string) => {
-            InitAction(projectName);
+        .action((projectName: string, cmdObj: Command) => {
+            InitAction(projectName, cmdObj.opts());
         })
 }
 
