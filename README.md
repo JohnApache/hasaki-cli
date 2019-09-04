@@ -3,7 +3,7 @@
 
 ### 安装方法
 
-npm install @tt/hasaki-cli -g
+npm install @dking/hasaki-cli -g
 
 ### hasaki-cli init 命令介绍
 该命令通过展示默认模版列表 快速创建指定类型 的模板项目
