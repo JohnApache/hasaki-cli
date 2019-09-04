@@ -10,21 +10,12 @@ import {FileCleanner, FilePiper} from '../../piper';
 import {ChooseTemplatePrompt, ConfirmDeletePrompt, CreatePrompt} from './prompt';
 import {TEMPLATE_REPO_TMP_DIRNAME} from '../../config/definition';
 import { Question } from 'inquirer';
-import { GetTemplates } from '../../config/template';
+import {Exit} from '../../common';
+import {SuccessLog} from '../../common/log';
+import {CheckEnv} from '../../common/template';
+import { Command } from 'commander';
 
-const Exit = () => {
-    process.exit(1);
-}
-const CheckTemplate = () => {
-    const templates = GetTemplates();
-    return templates && templates.length > 0;
-}
-
-const BeforeInitHandle = async (projectName: string, options: ActionOptions): Promise<void> => {
-    if(!CheckTemplate()) {
-        console.log(chalk.red.bold('current template list is empty.'));
-        return Exit();
-    }
+export const BeforeInitHandle = async (projectName: string, options: ActionOptions): Promise<void> => {
     const targetPath = path.resolve(process.cwd(), options.outDir || '', projectName);
     const tmpRepoPath = path.resolve(process.cwd(), options.config || TEMPLATE_REPO_TMP_DIRNAME);
     if(fs.existsSync(tmpRepoPath)) {
@@ -56,7 +47,7 @@ const BeforeInitHandle = async (projectName: string, options: ActionOptions): Pr
     }
 }
 
-const DownloadHandle = async (repo: string, dest: string): Promise<void> => {
+export const DownloadHandle = async (repo: string, dest: string): Promise<void> => {
     const ld = CreateLoading(`downloading template from remote ${chalk.blue.underline(repo)} ...`);
     try {
         ld.start();
@@ -69,7 +60,7 @@ const DownloadHandle = async (repo: string, dest: string): Promise<void> => {
     }
 } 
 
-const RepoPromptHandle = async (questions: Array<Question>): Promise<object> => {
+export const RepoPromptHandle = async (questions: Array<Question>): Promise<object> => {
     let parseData: object = {};
     if(questions.length > 0) {
         parseData = await CreatePrompt(questions)
@@ -77,7 +68,7 @@ const RepoPromptHandle = async (questions: Array<Question>): Promise<object> => 
     return parseData;
 }
 
-const RepoPipeHandle = async (source: string, dest: string, option: ActionOptions): Promise<void> => {
+export const RepoPipeHandle = async (source: string, dest: string, option: ActionOptions): Promise<void> => {
     const analyseResult = Analyse(source);
     const parseData = await RepoPromptHandle(analyseResult.question);
     const ld = CreateLoading(`tmp repo pipe to ${chalk.blue.underline(dest)}...`);
@@ -117,7 +108,7 @@ const RepoPipeHandle = async (source: string, dest: string, option: ActionOption
     }
 }
 
-type ActionOptions = {
+export type ActionOptions = {
     outDir?: string,
     ignore?: string,
     exclude?: string,
@@ -125,7 +116,10 @@ type ActionOptions = {
     config?: string,
 }
 
-const InitAction = async (projectName: string, options: ActionOptions): Promise<void> => {
+const InitAction = async (projectName: string, command: Command): Promise<void> => {
+    CheckEnv();
+    
+    const options: ActionOptions = command.opts();
     const targetPath = path.resolve(process.cwd(), options.outDir || '', projectName);
     const tmpRepoPath = path.resolve(process.cwd(), options.config || TEMPLATE_REPO_TMP_DIRNAME);
     await BeforeInitHandle(projectName, options);
@@ -133,7 +127,7 @@ const InitAction = async (projectName: string, options: ActionOptions): Promise<
     await DownloadHandle(template.remoteAddress, tmpRepoPath);
     await RepoPipeHandle(tmpRepoPath, targetPath, options);
     await FileCleanner(tmpRepoPath);
-    console.log(`create ${projectName} success!`);
+    SuccessLog(`create ${projectName} success!`)
 }
 
 export default InitAction;

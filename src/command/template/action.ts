@@ -1,5 +1,3 @@
-import chalk from 'chalk';
-import ora from 'ora';
 import {GetTemplates, UpdateTemplates, ResetTemplates} from '../../config/template';
 import { Command } from 'commander';
 import {
@@ -10,17 +8,8 @@ import {
     ResetTemplatePrompt
 } from './prompt';
 
-const Exit = () => {
-    process.exit(1);
-}
-
-const ErrorLog = (text: string): void => {
-    console.log(chalk.red.bold(text))
-}
-
-const SuccessLog = (text: string): void => {
-    ora().succeed(text);
-}
+import {Exit} from '../../common';
+import {ErrorLog, SuccessLog} from '../../common/log';
 
 type ActionOptions = {
     list?: boolean,
