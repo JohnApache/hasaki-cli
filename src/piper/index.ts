@@ -1,7 +1,7 @@
 import Clean from './clean';
 import ParseRender from './parseRender';
-import Scanner from './scanner';
-import TransferStation from './transferStation';
+import CreateScanner from './scanner';
+import CreateTransferStation from './transferStation';
 import Copy from './copy';
 
 export type ParseOption = {
@@ -30,13 +30,7 @@ export const FilePiper = (
         parseOption?: ParseOption,
     ): Promise<void> => {
     return new Promise((resolve, reject) => {
-        let count = 0;
-        const onTaskEnd = () => {
-            count--;
-            if(count === 0) {
-                resolve();
-            }
-        };
+       
         const {
             ignore = [],
             parseExclude = [],
@@ -44,25 +38,28 @@ export const FilePiper = (
             parseData = {}
         } = parseOption || {};
 
+        let count = 0;
+        const onTaskEnd = () => {
+            count--;
+            if(count === 0) {
+                resolve();
+            }
+        };
+
+        const Scanner = CreateScanner(ignore);
+        const TransferStation = CreateTransferStation({ parseExclude, parseInclude });
+        
         try {
             Scanner(source, (filepath: string) => {
                 count++;
                 const targetFile = filepath.replace(source, target);
                 TransferStation(
                     targetFile, 
-                    {
-                        parseExclude,
-                        parseInclude,
-                        ignore
-                    }, 
                     () => {
                         ParseRender(filepath, targetFile, parseData, onTaskEnd);
                     },
                     () => {
                         Copy(filepath, targetFile, onTaskEnd);
-                    },
-                    () => {
-                        setImmediate(onTaskEnd)
                     }
                 )
                 

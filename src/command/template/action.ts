@@ -10,7 +10,7 @@ import {
 
 import {Exit} from '../../common';
 import {ErrorLog, SuccessLog} from '../../common/log';
-
+import {CheckTemplate} from '../../common/template';
 type ActionOptions = {
     list?: boolean,
     add?: boolean,
@@ -18,11 +18,6 @@ type ActionOptions = {
     delete?: boolean,
     clear?: boolean,
     reset?: boolean
-}
-
-const CheckTemplate = () => {
-    const templates = GetTemplates();
-    return templates && templates.length > 0;
 }
 
 const ListAction = async (): Promise<void> => {
@@ -101,7 +96,12 @@ const ResetAction = async (): Promise<void> => {
 }
 
 const TemplateAction = async (command: Command): Promise<void> => {
-    const options: ActionOptions = command.opts();
+    const options = command.opts();
+    const usedOptions = Object.keys(options).filter(v => options[v]);
+    if(usedOptions.length > 1) {
+        ErrorLog('template command only allow one option!');
+        return Exit();
+    }
     if(options.list) {
         return ListAction();
     }

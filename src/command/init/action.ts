@@ -11,8 +11,8 @@ import {ChooseTemplatePrompt, ConfirmDeletePrompt, CreatePrompt} from './prompt'
 import {TEMPLATE_REPO_TMP_DIRNAME} from '../../config/definition';
 import { Question } from 'inquirer';
 import {Exit} from '../../common';
-import {SuccessLog} from '../../common/log';
-import {CheckEnv} from '../../common/template';
+import {SuccessLog, ErrorLog} from '../../common/log';
+import {CheckTemplate} from '../../common/template';
 import { Command } from 'commander';
 
 export const BeforeInitHandle = async (projectName: string, options: ActionOptions): Promise<void> => {
@@ -117,8 +117,10 @@ export type ActionOptions = {
 }
 
 const InitAction = async (projectName: string, command: Command): Promise<void> => {
-    CheckEnv();
-    
+    if(!CheckTemplate()) {
+        ErrorLog('current template list is empty.');
+        return Exit();
+    }
     const options: ActionOptions = command.opts();
     const targetPath = path.resolve(process.cwd(), options.outDir || '', projectName);
     const tmpRepoPath = path.resolve(process.cwd(), options.config || TEMPLATE_REPO_TMP_DIRNAME);
