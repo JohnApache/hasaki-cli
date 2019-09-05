@@ -13,9 +13,6 @@
     "assets": "assets"
   },
   "dependencies": {
-    "@types/ejs": "^2.6.3",
-    "@types/inquirer": "^6.5.0",
-    "@types/node": "^12.7.3",
     "chalk": "^2.4.2",
     "commander": "^3.0.1",
     "ejs": "^2.6.2",
@@ -24,7 +21,10 @@
   },
   "devDependencies": {
     "@types/chai": "^4.2.0",
+    "@types/ejs": "^2.6.3",
+    "@types/inquirer": "^6.5.0",
     "@types/mocha": "^5.2.7",
+    "@types/node": "^12.7.4",
     "chai": "^4.2.0",
     "mocha": "^6.2.0",
     "ts-node": "^8.3.0",
