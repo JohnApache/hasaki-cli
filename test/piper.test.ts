@@ -164,6 +164,31 @@ describe('piper文件中转功能单元测试', () => {
             expect(fs.readFileSync(tmp3.replace(tmpDir, targetDir)).toString() === '{"name":"<%= author%>"}');
             expect(fs.readFileSync(tmp4.replace(tmpDir, targetDir)).toString() === '.css{background:000}');
         });
+
+        it('FilePiper()方法可以配置parseInclude exlcude 短路径匹配模式具有同样的效果', async () => {
+            await FilePiper(tmpDir, targetDir, {
+                parseData: {
+                    author: '000'
+                },
+                parseInclude: [
+                    {
+                        path: './tmp/tmp1.text'
+                    },
+                    {
+                        path: './tmp/css'
+                    }
+                ],
+                parseExclude: [
+                    {
+                        path: './tmp/tmp3.json'
+                    }
+                ]
+            });
+            expect(fs.readFileSync(tmp1.replace(tmpDir, targetDir)).toString() === '测试文本000');
+            expect(fs.readFileSync(tmp2.replace(tmpDir, targetDir)).toString() === 'const ddd = "000"');
+            expect(fs.readFileSync(tmp3.replace(tmpDir, targetDir)).toString() === '{"name":"<%= author%>"}');
+            expect(fs.readFileSync(tmp4.replace(tmpDir, targetDir)).toString() === '.css{background:000}');
+        });
     })
 
     describe('Analyse()分析配置文件方法测试', () => {
