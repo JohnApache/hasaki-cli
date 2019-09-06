@@ -1,31 +1,71 @@
 import fs from 'fs';
-import {TEMPLATE_CONFIG_FILENAME} from '../config/definition';
-import {Question} from 'inquirer';
+import path from 'path';
+import { Question } from 'inquirer';
+import { isRegExp } from 'util';
+import { ErrorLog } from '../common/log';
+import { Exit } from '../common';
 
-type AnalyseResult = {
-    question: Array<Question>,
-    parseInclude: Array<RegExp>,
-    parseExclude: Array<RegExp>,
-    ignore: Array<RegExp>
+
+
+export type Rule = {
+    path?: string,
+    match?: RegExp
+};
+
+export type MatchRules = Array<Rule | RegExp>;
+
+export const IsMatchRules = (rootPath: string, targetPath: string, matchRules: MatchRules): boolean => {
+    const result = matchRules.some(reg => {
+        if(isRegExp(reg)) {
+            return (reg as RegExp).test(targetPath);
+        }
+        const match = (reg as Rule).match;
+        const matchPath = (reg as Rule).path;
+        if(match) return match.test(targetPath);
+        if(matchPath) {
+            if(path.isAbsolute(matchPath)) {
+                ErrorLog(matchPath);
+                ErrorLog('match path only accept relative path!');
+                return Exit();
+            }
+            const fullMatchPath = path.resolve(rootPath, matchPath);
+            // console.log(matchPath);
+            // console.log(rootPath);
+            // console.log(fullMatchPath);
+            // console.log(targetPath);
+            return targetPath.includes(fullMatchPath);
+        }
+        return false;
+    });
+
+    return result;
 }
 
-const Analyse = (sourceDir: string): AnalyseResult => {
-    const configFilePath = `${sourceDir}/${TEMPLATE_CONFIG_FILENAME}`;
+export type ScreenRule = {
+    exclude?: MatchRules,
+    include?: MatchRules,
+}
+
+type AnalyseResult = {
+    question?: Array<Question>,
+    parseInclude?: MatchRules,
+    parseExclude?: MatchRules,
+    ignore?: MatchRules,
+    screener?: (parseData: Object) => ScreenRule
+}
+
+const Analyse = (configFilePath: string): AnalyseResult => {
     if(fs.existsSync(configFilePath)) {
         const result = require(configFilePath) as AnalyseResult;
         return {
-            question: result.question || [],
-            parseInclude: result.parseInclude || [],
-            parseExclude: result.parseExclude || [],
-            ignore: result.ignore || [],
+            question: result.question,
+            parseInclude: result.parseInclude,
+            parseExclude: result.parseExclude,
+            ignore: result.ignore,
+            screener: result.screener
         };
     }
-    return {
-        question: [],
-        parseInclude: [],
-        parseExclude: [],
-        ignore: [],
-    };
+    return {};
 }
 
 export default Analyse;

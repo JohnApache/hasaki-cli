@@ -8,7 +8,7 @@ import CreateLoading from '../../loading';
 
 import {FileCleanner, FilePiper} from '../../piper';
 import {ChooseTemplatePrompt, ConfirmDeletePrompt, CreatePrompt} from './prompt';
-import {TEMPLATE_REPO_TMP_DIRNAME} from '../../config/definition';
+import {TEMPLATE_REPO_TMP_DIRNAME, TEMPLATE_CONFIG_FILENAME} from '../../config/definition';
 import { Question } from 'inquirer';
 import {Exit} from '../../common';
 import {SuccessLog, ErrorLog} from '../../common/log';
@@ -69,15 +69,35 @@ export const RepoPromptHandle = async (questions: Array<Question>): Promise<obje
 }
 
 export const RepoPipeHandle = async (source: string, dest: string, option: ActionOptions): Promise<void> => {
-    const analyseResult = Analyse(source);
-    const parseData = await RepoPromptHandle(analyseResult.question);
+    const configName = option.config || '';
+    if(path.isAbsolute(configName)) {
+        ErrorLog('config name cant set an absoulte path!');
+        return Exit();
+    }
+    const configFilePath = path.resolve(source, configName || TEMPLATE_CONFIG_FILENAME)
+    const analyseResult = Analyse(configFilePath);
+
+    const {
+        parseExclude = [],
+        parseInclude = [],
+        ignore = [],
+        question = [],
+        screener = () => {
+            return {
+                exclude: [],
+                include: []
+            }
+        }
+    } = analyseResult;
+
+    ignore.push({path: configName || TEMPLATE_CONFIG_FILENAME});
+
+    const parseData = await RepoPromptHandle(question);
+    const screenRule = screener(parseData);
+
     const ld = CreateLoading(`tmp repo pipe to ${chalk.blue.underline(dest)}...`);
     try {
         ld.start();
-        const parseExclude = analyseResult.parseExclude;
-        const parseInclude = analyseResult.parseInclude;
-        const ignore = analyseResult.ignore;
-
         if(option.exclude) {
             option.exclude.split(',').forEach(e => {
                 parseExclude.push(new RegExp(e))
@@ -97,7 +117,8 @@ export const RepoPipeHandle = async (source: string, dest: string, option: Actio
             parseData,
             parseExclude,
             parseInclude,
-            ignore
+            ignore,
+            screenRule,
         });
 
         ld.succeed('pipe handle success!');
@@ -123,7 +144,7 @@ const InitAction = async (projectName: string, command: Command): Promise<void> 
     }
     const options: ActionOptions = command.opts();
     const targetPath = path.resolve(process.cwd(), options.outDir || '', projectName);
-    const tmpRepoPath = path.resolve(process.cwd(), options.config || TEMPLATE_REPO_TMP_DIRNAME);
+    const tmpRepoPath = path.resolve(process.cwd(), TEMPLATE_REPO_TMP_DIRNAME);
     await BeforeInitHandle(projectName, options);
     const template = await ChooseTemplatePrompt();
     await DownloadHandle(template.remoteAddress, tmpRepoPath);

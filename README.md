@@ -1,9 +1,14 @@
+
+> 目前只是实现了脚手架的功能，模版还没有添加完整，下载的模版项目暂时只是测试用例, 还不能初始化正确的内置模版项目，后续会陆续添加 完整的模版项目。 
+
 # hasaki-cli
 自动化构建react, vue, jquery, js类库, koa/express/egg项目, node-plugin, typescript 等等多种项目结构初始化
 
 ### 安装方法
 
+```shell
 npm install @dking/hasaki-cli -g
+```
 
 ### hasaki-cli init 命令介绍
 该命令通过展示默认模版列表 快速创建指定类型 的模板项目

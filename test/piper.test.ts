@@ -167,11 +167,13 @@ describe('piper文件中转功能单元测试', () => {
     })
 
     describe('Analyse()分析配置文件方法测试', () => {
-        let tmpDir: string, tmp: string, otherDir: string;
+        let tmpDir: string, tmp: string, otherDir: string, otherTmp: string, otherTmp2: string;
         before(() => {
             tmpDir = path.resolve(__dirname, './tmp');
             otherDir = path.resolve(__dirname, './other');
             tmp = path.resolve(__dirname, './tmp/.hasakirc.js');
+            otherTmp = path.resolve(__dirname, './other/.ccc.js');
+            otherTmp2 = path.resolve(__dirname, './other/.ggg.js');
             if(!fs.existsSync(tmpDir)) {
                 fs.mkdirSync(tmpDir);
             }
@@ -180,6 +182,34 @@ describe('piper文件中转功能单元测试', () => {
             }
             if(!fs.existsSync(tmp)) {
                 fs.writeFileSync(tmp, `
+                    module.exports = {
+                        parseExclude: [
+                            /\\d/,
+                        ],
+                        parseInclude: [
+                            /\\w/,
+                        ],
+                        ignore: [
+                            /\\s/,
+                        ],
+                        question: [
+                            {
+                                type: 'input',
+                                message: '请输入作者名称',
+                                name: 'author',
+                                filter(input) {
+                                    return input || '';
+                                },
+                                validate(input) {
+                                    return input && input.length > 0;
+                                }
+                            },
+                        ]
+                    }
+                `)
+            }
+            if(!fs.existsSync(otherTmp)) {
+                fs.writeFileSync(otherTmp, `
                     module.exports = {
                         parseExclude: [
                             /\\d/,
@@ -216,31 +246,34 @@ describe('piper文件中转功能单元测试', () => {
                 fs.rmdirSync(tmpDir);
             }
             if(fs.existsSync(otherDir)) {
+                if(fs.existsSync(otherTmp)) {
+                    fs.unlinkSync(otherTmp);
+                }
+                if(fs.existsSync(otherTmp2)) {
+                    fs.unlinkSync(otherTmp2);
+                }
                 fs.rmdirSync(otherDir);
             }
         })
 
-        it('Analyse()方法可以动态读取指定目录下的.hasaki.js文件配置', () => {
-            const analyseResult = Analyse(tmpDir);
-            expect(analyseResult).to.be.a('object');
+        it('Analyse()方法可以读取指定任意目录位置下的配置文件', () => {
+            const analyseResult1 = Analyse(tmp);
+            const analyseResult2 = Analyse(otherTmp);
+            expect(analyseResult1).to.be.a('object');
+            expect(analyseResult2).to.be.a('object');
         });
 
         it('Analyse()方法读取的配置包含文件中转传输的必要字段', () => {
-            const analyseResult = Analyse(tmpDir);
+            const analyseResult = Analyse(tmp);
             expect(analyseResult).to.have.property('parseExclude').with.deep.equal([/\d/]);
             expect(analyseResult).to.have.property('parseInclude').with.deep.equal([/\w/]);
             expect(analyseResult).to.have.property('ignore').with.deep.equal([/\s/]);
             expect(analyseResult).to.have.property('question').with.lengthOf(1);
         });
 
-        it('Analyse()方法读取不包含配置文件的目录时返回默认字段', () => {
-            const analyseResult = Analyse(otherDir);
-            expect(analyseResult).to.deep.equal({
-                question: [],
-                parseInclude: [],
-                parseExclude: [],
-                ignore: [],
-            });
+        it('Analyse()方法读取不包含配置文件的目录时返回空对象', () => {
+            const analyseResult = Analyse(otherTmp2);
+            expect(analyseResult).to.deep.equal({});
         });
     })
 })

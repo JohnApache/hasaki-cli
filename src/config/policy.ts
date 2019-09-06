@@ -1,13 +1,12 @@
-import {TEMPLATE_CONFIG_FILENAME} from './definition';
-export const DefaultIgnore: RegExp[] = [
+import { MatchRules } from '../piper/analyse';
+export const DefaultIgnore: MatchRules= [
     /node_modules/,
-    new RegExp(`${TEMPLATE_CONFIG_FILENAME}$`)
 ];
 
-export const DefaultExclude: RegExp[] = [
+export const DefaultExclude: MatchRules = [
 ];
 
-export const DefaultInclude: RegExp[] = [
+export const DefaultInclude: MatchRules = [
     /^.+\.js$/,
     /^.+\.json$/,
 ];

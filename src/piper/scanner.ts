@@ -1,12 +1,20 @@
 import fs from 'fs';
-import {DefaultIgnore} from '../config/policy';
-const CreateScanner = (ignore: RegExp[]) => {
+
+import { DefaultIgnore } from '../config/policy';
+import { MatchRules, IsMatchRules } from './analyse';
+
+const CreateScanner = (rootPath: string, ignore: MatchRules) => {
     const AllIgnore = DefaultIgnore.concat(ignore);
+    const IsIgnore = (targetPath: string): boolean => {
+        return IsMatchRules(rootPath, targetPath, AllIgnore);
+    }
+
     const Scanner = (
         targetDir: string, 
         callback?: (filePath: string) => void
     ): void => {
-        if(AllIgnore.some(reg => reg.test(targetDir))) return;
+       
+        if(IsIgnore(targetDir)) return;
 
         if(!fs.existsSync(targetDir)) {
             throw new Error('targetDir is not exists.');
@@ -20,9 +28,8 @@ const CreateScanner = (ignore: RegExp[]) => {
             const files = fs.readdirSync(targetDir);
             files.forEach(filename => {
                 const filepath = `${targetDir}/${filename}`;
-                if(AllIgnore.some(reg => reg.test(filepath))) return;
                 const stat = fs.statSync(filepath);
-                if(stat.isFile()) {
+                if(stat.isFile() && !IsIgnore(filepath)) {
                     callback && callback(filepath);
                     return;
                 }

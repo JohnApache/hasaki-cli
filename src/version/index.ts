@@ -22,7 +22,7 @@ const CheckVersion = (): void => {
         const remoteVersion = stdout.trim();
         const currentVersion = packageInfo.version;
         if(CompareVersion(remoteVersion, currentVersion)) {
-            console.log(`Update available: ${chalk.gray(currentVersion)} -> ${chalk.greenBright.bold(remoteVersion)}, run ${chalk.greenBright.bold(`npm install ${packageInfo.name} -g`)} to update`)
+            console.log(`Update available: ${chalk.gray(currentVersion)} -> ${chalk.greenBright.bold(remoteVersion)}, run ${chalk.greenBright.bold(`npm install ${packageInfo.name} -g`)} to update!`)
         }
     })
 }
