@@ -1,6 +1,6 @@
 {
   "name": "@dking/hasaki-cli",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "自动化构建react, vue, jquery, js类库, koa/express/egg项目, node-plugin, typescript 等等多种项目结构初始化",
   "main": "index.js",
   "bin": {

@@ -2,6 +2,7 @@ import program from 'commander';
 import UseOption from './option/index';
 import UseCommand from './command/index';
 import chalk from 'chalk';
+import { GetPackageInfo } from './common/package';
 
 const Exit = (): void => {
     process.exit(1);
@@ -11,7 +12,10 @@ const UnknownCommand = (cmdName: string): void => {
     console.log(`${chalk.red('Unknown command')} ${chalk.yellow(cmdName)}.`);
 }
 
-program.version('0.0.1');
+const packageInfo = GetPackageInfo();
+
+program.version(packageInfo.version);
+
 UseOption(program);
 UseCommand(program);
 
