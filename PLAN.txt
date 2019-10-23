@@ -11,6 +11,3 @@ show prompt list 多选择
     
 cli gen eslint 内联 
 cli gen eslint,mocha,babel,rollup 内联多选   
-
-
-test push
