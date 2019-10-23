@@ -1,5 +1,7 @@
 import { Plugin, PackageInfo, UsedMemoryType } from "./type";
 import GenRollupConfig from "./gen/rollup";
+import GenTSConfig from "./gen/typescript";
+import GenMochaConfig from "./gen/mocha";
 
 export const PluginList: Plugin[] = [
     {
@@ -12,7 +14,9 @@ export const PluginList: Plugin[] = [
     },
     {
         pluginName: 'mocha',
-        install() {}
+        install(usedMemory: UsedMemoryType): PackageInfo {
+            return GenMochaConfig(usedMemory);
+        },
     },
     {
         pluginName: 'babel',
@@ -30,7 +34,9 @@ export const PluginList: Plugin[] = [
     },
     {
         pluginName: 'typescript',
-        install() {}
+        install(usedMemory: UsedMemoryType): PackageInfo {
+            return GenTSConfig(usedMemory);
+        },
     }
 ] 
 

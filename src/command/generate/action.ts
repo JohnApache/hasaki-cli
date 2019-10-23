@@ -5,10 +5,18 @@ import EventProxy from '@dking/event-proxy';
 import _ from 'lodash';
 import path from 'path';
 import fs from 'fs';
-import { UsedMemoryType, PackageInfo } from "./type";
-
+import { UsedMemoryType, PackageInfo, NormalObject } from "./type";
 
 const EP = EventProxy.create();
+
+const SortObjectByKey = (obj: NormalObject): NormalObject => {
+    const sortedKeys = Object.keys(obj).sort();
+    return sortedKeys.reduce((prev, cur) => {
+        prev[cur] = obj[cur];
+        return prev;
+    }, {} as NormalObject);
+}
+
 const GenPlugin = async (pluginName: string, usedMemory: UsedMemoryType): Promise<void> => {
     if(PluginList.every(plugin => plugin.pluginName !== pluginName)) {
         throw new Error(`cant't resolve ${pluginName} plugin!`);
@@ -35,6 +43,9 @@ const GenPackage = (): void => {
     });
  
     EP.once('on_generate_finish', () => {
+        packageJson['scripts'] = SortObjectByKey(packageJson['scripts']);
+        packageJson['dependencies'] = SortObjectByKey(packageJson['dependencies']);
+        packageJson['devDependencies'] = SortObjectByKey(packageJson['devDependencies']);
         fs.writeFileSync(newPackagePath, JSON.stringify(packageJson, null, 2));
     });
 }

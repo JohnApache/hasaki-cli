@@ -6,7 +6,8 @@ import _ from 'lodash';
 const BuildRollupPackageInfo = (usedMemory: UsedMemoryType): PackageInfo => {
     let packageInfo = {
         "scripts": {
-            "build:rollup": "rollup -c"
+            "build:rollup": "rollup -c",
+            "watch:rollup": "rollup --watch"
         },
         "devDependencies": {
             "rollup": "^1.21.4",
@@ -39,6 +40,7 @@ const BuildRollupPackageInfo = (usedMemory: UsedMemoryType): PackageInfo => {
             }
         })
     }
+
 
     return packageInfo;
 
