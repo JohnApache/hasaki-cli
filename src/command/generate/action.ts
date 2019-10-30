@@ -5,6 +5,7 @@ import EventProxy from '@dking/event-proxy';
 import _ from 'lodash';
 import path from 'path';
 import fs from 'fs';
+import CreateLoading from "../../loading";
 import { UsedMemoryType, PackageInfo, NormalObject } from "./type";
 
 const EP = EventProxy.create();
@@ -21,12 +22,18 @@ const GenPlugin = async (pluginName: string, usedMemory: UsedMemoryType): Promis
     if(PluginList.every(plugin => plugin.pluginName !== pluginName)) {
         throw new Error(`cant't resolve ${pluginName} plugin!`);
     }
-
+    const ld = CreateLoading('relative config files are generating...').start();
     for(let i = 0; i < PluginList.length; i++) {
         const plugin = PluginList[i];
         if(plugin.pluginName !== pluginName) continue;
-        const packageInfo = await plugin.install(usedMemory);
-        packageInfo && EP.emit('update_package', packageInfo);
+        try {
+            const packageInfo = await plugin.install(usedMemory);
+            ld.succeed(`generate ${pluginName}'s config files succeed!`);
+            packageInfo && EP.emit('update_package', packageInfo);
+        } catch (error) {
+            ld.fail(`generate ${pluginName} config files failed!`)
+            throw new Error(error);
+        }
     }
 }
 
