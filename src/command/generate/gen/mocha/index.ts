@@ -1,7 +1,12 @@
 import ParseRender from "../../../../piper/parseRender"
 import path from "path";
-import { UsedMemoryType, PackageInfo, GenerateContext } from "../../type";
+import fs from "fs";
 import _ from 'lodash';
+
+import { UsedMemoryType, PackageInfo, GenerateContext } from "../../type";
+import { ConfirmCoverPrompt } from "../../prompt";
+import { Exit } from "../../../../common";
+
 
 const BuildMochaPackageInfo = (usedMemory: UsedMemoryType): PackageInfo => {
     const useTs = usedMemory['typescript'];
@@ -53,12 +58,19 @@ const BuildMochaPackageInfo = (usedMemory: UsedMemoryType): PackageInfo => {
     return packageInfo;
 }
 
-const GenMochaConfig = (usedMemory: UsedMemoryType, context: GenerateContext): Promise<PackageInfo> => {
+const GenMochaConfig = async (usedMemory: UsedMemoryType, context: GenerateContext): Promise<PackageInfo> => {
+
+    const useTs = usedMemory['typescript'];
+    const targetPath = path.resolve(context.targetPath, `mocha-demo.${useTs ? 'ts' : 'js'}`);
+    if(!context.forceCover && fs.existsSync(targetPath)) {
+        const answer = await ConfirmCoverPrompt(path.basename(targetPath));
+        !answer.confirm && Exit(); 
+    }
+
     return new Promise(resolve => {
-        const useTs = usedMemory['typescript'];
         ParseRender(
             path.resolve(__dirname, '../../../../../assets/mocha-demo.js'),
-            path.resolve(context.targetPath, `mocha-demo.${useTs ? 'ts' : 'js'}`),
+            targetPath,
             usedMemory,
             () => {
                 resolve(BuildMochaPackageInfo(usedMemory));

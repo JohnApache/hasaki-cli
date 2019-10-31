@@ -1,7 +1,10 @@
 import ParseRender from "../../../../piper/parseRender"
-import path, { resolve } from "path";
+import path from "path";
+import fs from "fs";
 import _ from 'lodash'
 import { UsedMemoryType, PackageInfo, GenerateContext } from "../../type";
+import { ConfirmCoverPrompt } from "../../prompt";
+import { Exit } from "../../../../common";
 
 const BuildESLintPackageInfo = (usedMemory: UsedMemoryType): PackageInfo => {
     let packageInfo: PackageInfo = {
@@ -77,23 +80,35 @@ const BuildESLintPackageInfo = (usedMemory: UsedMemoryType): PackageInfo => {
 }
 
 const GenESLintConfig = (usedMemory: UsedMemoryType, context: GenerateContext): Promise<PackageInfo> => {
-    return new Promise(resolve => {
+    return new Promise(async (resolve) => {
         let count = 2;
         const onTaskEnd = () => {
             count --;
             count === 0 && resolve(BuildESLintPackageInfo(usedMemory))
         }
 
+        const targetPath1 = path.resolve(context.targetPath, './.eslintrc2.js');
+        if(!context.forceCover && fs.existsSync(targetPath1)) {
+            const answer = await ConfirmCoverPrompt(path.basename(targetPath1));
+            !answer.confirm && Exit(); 
+        }
+
         ParseRender(
             path.resolve(__dirname, '../../../../../assets/.eslintrc.js'),
-            path.resolve(context.targetPath, './.eslintrc2.js'),
+            targetPath1,
             usedMemory,
             onTaskEnd
         );
     
+        const targetPath2 = path.resolve(context.targetPath, './.eslintignore2');
+        if(!context.forceCover && fs.existsSync(targetPath2)) {
+            const answer = await ConfirmCoverPrompt(path.basename(targetPath2));
+            !answer.confirm && Exit(); 
+        }
+
         ParseRender(
             path.resolve(__dirname, '../../../../../assets/.eslintignore'),
-            path.resolve(context.targetPath, './.eslintignore2'),
+            targetPath2,
             usedMemory,
             onTaskEnd
         );

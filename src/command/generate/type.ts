@@ -12,10 +12,11 @@ export interface PackageInfo extends NormalObject{}
 
 export interface Plugin {
     pluginName: string;
-    install(usedMemory: UsedMemoryType, context?: GeneratedContext): Promise<PackageInfo> | Promise<void> | PackageInfo | void;
+    install(usedMemory: UsedMemoryType, context?: GenerateContext): Promise<PackageInfo> | Promise<void> | PackageInfo | void;
 }
 
 export interface GenerateContext {
     rootPath: string,
-    targetPath: string
+    targetPath: string,
+    forceCover: boolean
 }

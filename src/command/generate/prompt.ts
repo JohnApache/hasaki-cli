@@ -9,6 +9,11 @@ export const CreatePrompt = (questions: Array<Question>): Promise<any> => {
 interface ChoosePluginAnswer extends Answers {
     plugins: string []
 }
+
+interface ConfirmCoverAnswer extends Answers {
+    confirm: boolean
+}
+
 export const ChoosePluginPrompt = (): Promise<ChoosePluginAnswer> => {
     const question = {
         type: 'checkbox',
@@ -20,6 +25,16 @@ export const ChoosePluginPrompt = (): Promise<ChoosePluginAnswer> => {
         choices() {
             return PluginList.map(plugin => plugin.pluginName);
         }
+    }
+    return CreatePrompt([question])
+}
+
+export const ConfirmCoverPrompt = async (dirname: string): Promise<ConfirmCoverAnswer> => {
+    const question = {
+        type: 'confirm',
+        name: 'confirm',
+        message: `do you confirm cover ${dirname}?`,
+        default: false,
     }
     return CreatePrompt([question])
 }

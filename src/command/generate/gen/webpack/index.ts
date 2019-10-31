@@ -2,9 +2,11 @@ import ParseRender from "../../../../piper/parseRender";
 import CreateScanner from "../../../../piper/scanner";
 import Copy from "../../../../piper/copy";
 import path from "path";
+import fs from "fs";
 import _ from "lodash";
 import { UsedMemoryType, PackageInfo, GenerateContext } from "../../type";
-import { Command } from "commander";
+import { ConfirmCoverPrompt } from "../../prompt";
+import { Exit } from "../../../../common";
 
 const BuildWebpackPackageInfo = (usedMemory: UsedMemoryType): PackageInfo => {
     let packageInfo: PackageInfo = {};
@@ -48,8 +50,8 @@ const BuildWebpackPackageInfo = (usedMemory: UsedMemoryType): PackageInfo => {
     return packageInfo;
 }
 
-const GenWebpackConfig = async (usedMemory: UsedMemoryType, context: GenerateContext): Promise<PackageInfo> => {
-    return new Promise(resolve => {
+const GenWebpackConfig = (usedMemory: UsedMemoryType, context: GenerateContext): Promise<PackageInfo> => {
+    return new Promise(async (resolve) => {
         const useReact = usedMemory['react'];
         const useVue = usedMemory['vue'];
 
@@ -66,21 +68,38 @@ const GenWebpackConfig = async (usedMemory: UsedMemoryType, context: GenerateCon
             count === 0 && resolve(BuildWebpackPackageInfo(usedMemory))
         }
         
+        const handleTask = (filepath: string) => {
+            const targetPath = filepath.replace(rootPath, contextPath);
+            const isTemplate = path.extname(filepath).indexOf('html') !== -1;
+
+            count ++;
+            if(isTemplate) return Copy(filepath, targetPath, onTaskEnd);
+            ParseRender(
+                filepath, 
+                targetPath,
+                usedMemory,
+                onTaskEnd
+            )
+        }
+
+        const coverPromptFileQueue:string[] = [];
+
         Scanner(
             rootPath,
             filepath => {
                 const targetPath = filepath.replace(rootPath, contextPath);
-                const isTemplate = path.extname(filepath).indexOf('html') !== -1;
-                count ++;
-                if(isTemplate) return Copy(filepath, targetPath, onTaskEnd);
-                ParseRender(
-                    filepath, 
-                    targetPath,
-                    usedMemory,
-                    onTaskEnd
-                )
+                if(!context.forceCover && fs.existsSync(targetPath)) return coverPromptFileQueue.push(filepath);
+                handleTask(filepath);
             }
         )
+
+        for(let i = 0; i < coverPromptFileQueue.length; i++) {
+            const filepath = coverPromptFileQueue[i];
+            const targetPath = filepath.replace(rootPath, contextPath);
+            const answer = await ConfirmCoverPrompt(path.basename(targetPath))
+            if(!answer.confirm) return Exit();
+            handleTask(filepath);
+        }
     })
 }
 

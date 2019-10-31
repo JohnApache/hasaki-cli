@@ -1,6 +1,9 @@
 import ParseRender from "../../../../piper/parseRender"
 import path from "path";
+import fs from "fs";
 import { UsedMemoryType, PackageInfo, GenerateContext } from "../../type";
+import { ConfirmCoverPrompt } from "../../prompt";
+import { Exit } from "../../../../common";
 
 const BuildBabelPackageInfo = (usedMemory: UsedMemoryType): PackageInfo => {
     let packageInfo: PackageInfo = {
@@ -20,11 +23,18 @@ const BuildBabelPackageInfo = (usedMemory: UsedMemoryType): PackageInfo => {
     return packageInfo;
 }
 
-const GenBabelConfig = (usedMemory: UsedMemoryType, context: GenerateContext): Promise<PackageInfo> => {
+const GenBabelConfig = async (usedMemory: UsedMemoryType, context: GenerateContext): Promise<PackageInfo> => {
+
+    const targetPath = path.resolve(context.targetPath, 'babel.config2.js');
+    if(!context.forceCover && fs.existsSync(targetPath)) {
+        const answer = await ConfirmCoverPrompt(path.basename(targetPath));
+        !answer.confirm && Exit(); 
+    }
+
     return new Promise(resolve => {
         ParseRender(
             path.resolve(__dirname, '../../../../../assets/babel.config.js'),
-            path.resolve(context.targetPath, `babel.config2.js`),
+            targetPath,
             usedMemory,
             () => {
                 resolve(BuildBabelPackageInfo(usedMemory))
