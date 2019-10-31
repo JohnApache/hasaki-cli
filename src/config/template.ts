@@ -16,7 +16,7 @@ export const GetTemplates = (): Template[] => {
 
 export const UpdateTemplates = (templates: Template[]): void => {
     const templateFilePath = path.resolve(__dirname, '../../assets/template.json');
-    fs.writeFileSync(templateFilePath, JSON.stringify(templates))
+    fs.writeFileSync(templateFilePath, JSON.stringify(templates, null, 2))
 }
 
 export const ResetTemplates = (): void => {

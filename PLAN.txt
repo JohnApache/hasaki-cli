@@ -1,0 +1,17 @@
+cli gen
+show prompt list 多选择
+    -- eslint
+    -- mocha
+    -- jest
+    -- babel
+    -- webpack
+    -- rollup
+    -- gulp
+    -- typescript
+    -- readme
+    -- lerna
+    -- react
+    -- vue
+    
+cli gen eslint 内联 
+cli gen eslint,mocha,babel,rollup 内联多选   
