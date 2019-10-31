@@ -1,4 +1,4 @@
-import { Plugin, PackageInfo, UsedMemoryType } from "./type";
+import { Plugin, PackageInfo, UsedMemoryType, GenerateContext } from "./type";
 import GenRollupConfig from "./gen/rollup";
 import GenTSConfig from "./gen/typescript";
 import GenMochaConfig from "./gen/mocha";
@@ -13,62 +13,62 @@ import GenJestConfig from "./gen/jest";
 export const PluginList: Plugin[] = [
     {
         pluginName: 'readme',
-        install(usedMemory: UsedMemoryType): void {
-            return GenReadmeConfig(usedMemory);
+        install(usedMemory: UsedMemoryType, context: GenerateContext): Promise<void> {
+            return GenReadmeConfig(usedMemory, context);
         },
     },
     {
         pluginName: 'eslint',
-        install(usedMemory: UsedMemoryType): PackageInfo {
-            return GenESLintConfig(usedMemory);
+        install(usedMemory: UsedMemoryType, context: GenerateContext): Promise<PackageInfo> {
+            return GenESLintConfig(usedMemory, context);
         },
     },
     {
         pluginName: 'mocha',
-        install(usedMemory: UsedMemoryType): PackageInfo {
-            return GenMochaConfig(usedMemory);
+        install(usedMemory: UsedMemoryType, context: GenerateContext): Promise<PackageInfo> {
+            return GenMochaConfig(usedMemory, context);
         },
     },
     {
         pluginName: 'jest',
-        install(usedMemory: UsedMemoryType): PackageInfo {
+        install(usedMemory: UsedMemoryType, context: GenerateContext): PackageInfo {
             return GenJestConfig(usedMemory);
         },
     },
     {
         pluginName: 'babel',
-        install(usedMemory: UsedMemoryType): PackageInfo {
-            return GenBabelConfig(usedMemory);
+        install(usedMemory: UsedMemoryType, context: GenerateContext): Promise<PackageInfo> {
+            return GenBabelConfig(usedMemory, context);
         },
     },
     {
         pluginName: 'webpack',
-        install(usedMemory: UsedMemoryType): PackageInfo {
-            return GenWebpackConfig(usedMemory);
+        install(usedMemory: UsedMemoryType, context: GenerateContext): Promise<PackageInfo> {
+            return GenWebpackConfig(usedMemory, context);
         },
     },
     {
         pluginName: 'rollup',
-        install(usedMemory: UsedMemoryType): PackageInfo {
-            return GenRollupConfig(usedMemory);
+        install(usedMemory: UsedMemoryType, context: GenerateContext): Promise<PackageInfo> {
+            return GenRollupConfig(usedMemory, context);
         },
     },
     {
         pluginName: 'gulp',
-        install(usedMemory: UsedMemoryType): PackageInfo {
+        install(usedMemory: UsedMemoryType, context: GenerateContext): PackageInfo {
             return GenGulpConfig(usedMemory);
         },
     },
     {
         pluginName: 'lerna',
-        install(usedMemory: UsedMemoryType): PackageInfo {
+        install(usedMemory: UsedMemoryType, context: GenerateContext): PackageInfo {
             return GenLernaConfig(usedMemory);
         },
     },
     {
         pluginName: 'typescript',
-        install(usedMemory: UsedMemoryType): PackageInfo {
-            return GenTSConfig(usedMemory);
+        install(usedMemory: UsedMemoryType, context: GenerateContext): Promise<PackageInfo> {
+            return GenTSConfig(usedMemory, context);
         },
     }
 ] 

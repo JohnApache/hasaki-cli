@@ -1,6 +1,6 @@
 import ParseRender from "../../../../piper/parseRender"
 import path from "path";
-import { UsedMemoryType, PackageInfo } from "../../type";
+import { UsedMemoryType, PackageInfo, GenerateContext } from "../../type";
 import _ from 'lodash';
 
 const BuildMochaPackageInfo = (usedMemory: UsedMemoryType): PackageInfo => {
@@ -53,14 +53,18 @@ const BuildMochaPackageInfo = (usedMemory: UsedMemoryType): PackageInfo => {
     return packageInfo;
 }
 
-const GenMochaConfig = (usedMemory: UsedMemoryType): PackageInfo => {
-    const useTs = usedMemory['typescript'];
-    ParseRender(
-        path.resolve(__dirname, '../../../../../assets/mocha-demo.js.bak'),
-        path.resolve(process.cwd(), `mocha-demo.${useTs ? 'ts' : 'js'}`),
-        usedMemory
-    )
-    return BuildMochaPackageInfo(usedMemory);
+const GenMochaConfig = (usedMemory: UsedMemoryType, context: GenerateContext): Promise<PackageInfo> => {
+    return new Promise(resolve => {
+        const useTs = usedMemory['typescript'];
+        ParseRender(
+            path.resolve(__dirname, '../../../../../assets/mocha-demo.js'),
+            path.resolve(context.targetPath, `mocha-demo.${useTs ? 'ts' : 'js'}`),
+            usedMemory,
+            () => {
+                resolve(BuildMochaPackageInfo(usedMemory));
+            }
+        )
+    })
 }
 
 export default GenMochaConfig;

@@ -1,4 +1,4 @@
-import { UsedMemoryType, PackageInfo } from "../../type";
+import { UsedMemoryType, PackageInfo, GenerateContext } from "../../type";
 import ParseRender from "../../../../piper/parseRender";
 import path from 'path';
 import _ from 'lodash';
@@ -46,14 +46,17 @@ const BuildRollupPackageInfo = (usedMemory: UsedMemoryType): PackageInfo => {
 
 }
 
-const GenRollupConfig = (usedMemory: UsedMemoryType): PackageInfo => {
-    ParseRender(
-        path.resolve(__dirname, '../../../../../assets/rollup.config.js.bak'),
-        path.resolve(process.cwd(), './rollup.config2.js'),
-        usedMemory
-    )
-    
-    return BuildRollupPackageInfo(usedMemory);
+const GenRollupConfig = (usedMemory: UsedMemoryType, context: GenerateContext): Promise<PackageInfo> => {
+    return new Promise(resolve => {
+        ParseRender(
+            path.resolve(__dirname, '../../../../../assets/rollup.config.js'),
+            path.resolve(context.targetPath, './rollup.config2.js'),
+            usedMemory,
+            () => {
+                resolve(BuildRollupPackageInfo(usedMemory));
+            }
+        )
+    })
 }
 
 export default GenRollupConfig;

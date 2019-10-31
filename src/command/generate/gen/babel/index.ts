@@ -1,6 +1,6 @@
 import ParseRender from "../../../../piper/parseRender"
 import path from "path";
-import { UsedMemoryType, PackageInfo } from "../../type";
+import { UsedMemoryType, PackageInfo, GenerateContext } from "../../type";
 
 const BuildBabelPackageInfo = (usedMemory: UsedMemoryType): PackageInfo => {
     let packageInfo: PackageInfo = {
@@ -20,13 +20,17 @@ const BuildBabelPackageInfo = (usedMemory: UsedMemoryType): PackageInfo => {
     return packageInfo;
 }
 
-const GenBabelConfig = (usedMemory: UsedMemoryType): PackageInfo => {
-    ParseRender(
-        path.resolve(__dirname, '../../../../../assets/babel.config.js.bak'),
-        path.resolve(process.cwd(), `babel.config2.js`),
-        usedMemory
-    )
-    return BuildBabelPackageInfo(usedMemory);
+const GenBabelConfig = (usedMemory: UsedMemoryType, context: GenerateContext): Promise<PackageInfo> => {
+    return new Promise(resolve => {
+        ParseRender(
+            path.resolve(__dirname, '../../../../../assets/babel.config.js'),
+            path.resolve(context.targetPath, `babel.config2.js`),
+            usedMemory,
+            () => {
+                resolve(BuildBabelPackageInfo(usedMemory))
+            }
+        )
+    })
 }
 
 export default GenBabelConfig;

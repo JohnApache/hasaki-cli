@@ -1,6 +1,6 @@
 import ParseRender from "../../../../piper/parseRender"
 import path from "path";
-import { UsedMemoryType, PackageInfo } from "../../type";
+import { UsedMemoryType, PackageInfo, GenerateContext } from "../../type";
 
 const BuildTSPackageInfo = (usedMemory: UsedMemoryType): PackageInfo => {
     let packageInfo = {
@@ -17,13 +17,17 @@ const BuildTSPackageInfo = (usedMemory: UsedMemoryType): PackageInfo => {
     return packageInfo;
 }
 
-const GenTSConfig = (usedMemory: UsedMemoryType): PackageInfo => {
-    ParseRender(
-        path.resolve(__dirname, '../../../../../assets/tsconfig.json.bak'),
-        path.resolve(process.cwd(), 'tsconfig2.json'),
-        usedMemory
-    )
-    return BuildTSPackageInfo(usedMemory);
+const GenTSConfig = (usedMemory: UsedMemoryType, context: GenerateContext): Promise<PackageInfo> => {
+    return new Promise(resolve => {
+        ParseRender(
+            path.resolve(__dirname, '../../../../../assets/tsconfig.json'),
+            path.resolve(context.targetPath, 'tsconfig2.json'),
+            usedMemory,
+            () => {
+                resolve(BuildTSPackageInfo(usedMemory));
+            }
+        )
+    })
 }
 
 export default GenTSConfig;

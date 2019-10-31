@@ -1,7 +1,7 @@
 import ParseRender from "../../../../piper/parseRender"
-import path from "path";
+import path, { resolve } from "path";
 import _ from 'lodash'
-import { UsedMemoryType, PackageInfo } from "../../type";
+import { UsedMemoryType, PackageInfo, GenerateContext } from "../../type";
 
 const BuildESLintPackageInfo = (usedMemory: UsedMemoryType): PackageInfo => {
     let packageInfo: PackageInfo = {
@@ -76,19 +76,28 @@ const BuildESLintPackageInfo = (usedMemory: UsedMemoryType): PackageInfo => {
     return packageInfo;
 }
 
-const GenESLintConfig = (usedMemory: UsedMemoryType): PackageInfo => {
-    ParseRender(
-        path.resolve(__dirname, '../../../../../assets/eslintrc.js.bak'),
-        path.resolve(process.cwd(), './.eslintrc2.js'),
-        usedMemory
-    );
+const GenESLintConfig = (usedMemory: UsedMemoryType, context: GenerateContext): Promise<PackageInfo> => {
+    return new Promise(resolve => {
+        let count = 2;
+        const onTaskEnd = () => {
+            count --;
+            count === 0 && resolve(BuildESLintPackageInfo(usedMemory))
+        }
 
-    ParseRender(
-        path.resolve(__dirname, '../../../../../assets/eslintignore.bak'),
-        path.resolve(process.cwd(), './.eslintignore2'),
-        usedMemory
-    );
-    return BuildESLintPackageInfo(usedMemory);
+        ParseRender(
+            path.resolve(__dirname, '../../../../../assets/.eslintrc.js'),
+            path.resolve(context.targetPath, './.eslintrc2.js'),
+            usedMemory,
+            onTaskEnd
+        );
+    
+        ParseRender(
+            path.resolve(__dirname, '../../../../../assets/.eslintignore'),
+            path.resolve(context.targetPath, './.eslintignore2'),
+            usedMemory,
+            onTaskEnd
+        );
+    })
 }
 
 export default GenESLintConfig;

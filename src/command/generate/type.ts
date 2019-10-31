@@ -1,3 +1,5 @@
+import { Command } from "commander";
+
 export interface UsedMemoryType {
     [key: string]: boolean
 }
@@ -10,6 +12,10 @@ export interface PackageInfo extends NormalObject{}
 
 export interface Plugin {
     pluginName: string;
-    install(usedMemory: UsedMemoryType): PackageInfo | void;
+    install(usedMemory: UsedMemoryType, context?: GeneratedContext): Promise<PackageInfo> | Promise<void> | PackageInfo | void;
 }
 
+export interface GenerateContext {
+    rootPath: string,
+    targetPath: string
+}

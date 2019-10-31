@@ -6,7 +6,7 @@ import _ from 'lodash';
 import path from 'path';
 import fs from 'fs';
 import CreateLoading from "../../loading";
-import { UsedMemoryType, PackageInfo, NormalObject } from "./type";
+import { UsedMemoryType, PackageInfo, NormalObject, GenerateContext } from "./type";
 
 const EP = EventProxy.create();
 
@@ -18,7 +18,7 @@ const SortObjectByKey = (obj: NormalObject): NormalObject => {
     }, {} as NormalObject);
 }
 
-const GenPlugin = async (pluginName: string, usedMemory: UsedMemoryType): Promise<void> => {
+const GenPlugin = async (pluginName: string, usedMemory: UsedMemoryType, context: GenerateContext): Promise<void> => {
     if(PluginList.every(plugin => plugin.pluginName !== pluginName)) {
         throw new Error(`cant't resolve ${pluginName} plugin!`);
     }
@@ -27,14 +27,16 @@ const GenPlugin = async (pluginName: string, usedMemory: UsedMemoryType): Promis
         const plugin = PluginList[i];
         if(plugin.pluginName !== pluginName) continue;
         try {
-            const packageInfo = await plugin.install(usedMemory);
-            ld.succeed(`generate ${pluginName}'s config files succeed!`);
+            const packageInfo = await plugin.install(usedMemory, context);
+            ld.succeed(`resolved ${pluginName}'s config files!`);
             packageInfo && EP.emit('update_package', packageInfo);
         } catch (error) {
             ld.fail(`generate ${pluginName} config files failed!`)
             throw new Error(error);
         }
     }
+
+
 }
 
 const GenPackage = (): void => {
@@ -73,6 +75,23 @@ const GenUsedMemory = (pluginList: string[]): UsedMemoryType => {
     return UsedMemory;
 }
 
+const BuildGenerateContext = (cmd: Command): GenerateContext => {
+    const outDir: string = cmd.outDir || '';
+
+    const rootPath:string = process.cwd();
+    let targetPath:string;
+    if(path.isAbsolute(outDir)) {
+        targetPath = outDir;
+    }else {
+        targetPath = path.resolve(rootPath, outDir);
+    }
+  
+    return {
+        rootPath,
+        targetPath
+    }
+}
+
 const GenAction = async (pluginName: string, cmd: Command) => {
     pluginName = pluginName.trim().toLowerCase();
     let pluginList = [];
@@ -83,13 +102,16 @@ const GenAction = async (pluginName: string, cmd: Command) => {
         pluginList = pluginName.split(',').filter(v => v.trim().length > 0);
     }
 
+    const installed: string = cmd.installed || '';
+    const installedList = installed.split(',').filter(v => v.trim().length > 0);
+
     GenPackage(); 
 
-    const usedMemory = GenUsedMemory(pluginList);
-    
+    const usedMemory = GenUsedMemory(pluginList.concat(installedList));
+    const context = BuildGenerateContext(cmd);
     for(let i = 0; i < pluginList.length; i ++) {
         const plugin = pluginList[i];
-        await GenPlugin(plugin, usedMemory);
+        await GenPlugin(plugin, usedMemory, context);
     }
     
     EP.emit('on_generate_finish');
