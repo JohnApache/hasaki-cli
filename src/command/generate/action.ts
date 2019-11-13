@@ -50,9 +50,17 @@ const GenPlugin = async (
 };
 
 const GenPackage = (context: GenerateContext): void => {
-	const packagePath = path.resolve(process.cwd(), "package.json");
+	const packagePath = path.resolve(context.targetPath, "package.json");
 	const newPackagePath = path.resolve(context.targetPath, `package${context.suffix}.json`);
-	let packageJson: PackageInfo = {};
+	let packageJson: PackageInfo = {
+		"name": "@dking/hasaki-cli-template",
+		"version": "0.0.1",
+		"description": "@dking/hasaki-cli init application",
+		"main": "index.js",
+		"keywords": [],
+		"author": "",
+		"license": "",
+	};
 	if (fs.existsSync(packagePath) && fs.statSync(packagePath).isFile()) {
 		packageJson = require(packagePath);
 	}
