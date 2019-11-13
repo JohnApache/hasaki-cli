@@ -61,7 +61,7 @@ const BuildMochaPackageInfo = (usedMemory: UsedMemoryType): PackageInfo => {
 const GenMochaConfig = async (usedMemory: UsedMemoryType, context: GenerateContext): Promise<PackageInfo> => {
 
     const useTs = usedMemory['typescript'];
-    const targetPath = path.resolve(context.targetPath, `mocha-demo.${useTs ? 'ts' : 'js'}`);
+    const targetPath = path.resolve(context.targetPath, `test/mocha-demo${context.suffix}.test.${useTs ? 'ts' : 'js'}`);
     if(!context.forceCover && fs.existsSync(targetPath)) {
         const answer = await ConfirmCoverPrompt(path.basename(targetPath));
         !answer.confirm && Exit(); 

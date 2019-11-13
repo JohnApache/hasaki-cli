@@ -59,7 +59,7 @@ const GenWebpackConfig = (usedMemory: UsedMemoryType, context: GenerateContext):
         if(useVue) return resolve(BuildWebpackPackageInfo(usedMemory));
 
         const rootPath = path.resolve(__dirname, '../../../../../assets/webpack');
-        const contextPath: string = path.resolve(context.targetPath, './webpack_config2');
+        const contextPath: string = path.resolve(context.targetPath, `./webpack_config${context.suffix}`);
         
         const Scanner = CreateScanner(rootPath, []);
         let count = 0;

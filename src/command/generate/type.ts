@@ -18,5 +18,6 @@ export interface Plugin {
 export interface GenerateContext {
     rootPath: string,
     targetPath: string,
-    forceCover: boolean
+    forceCover: boolean,
+    suffix: string
 }

@@ -25,7 +25,7 @@ const BuildBabelPackageInfo = (usedMemory: UsedMemoryType): PackageInfo => {
 
 const GenBabelConfig = async (usedMemory: UsedMemoryType, context: GenerateContext): Promise<PackageInfo> => {
 
-    const targetPath = path.resolve(context.targetPath, 'babel.config2.js');
+    const targetPath = path.resolve(context.targetPath, `babel.config${context.suffix}.js`);
     if(!context.forceCover && fs.existsSync(targetPath)) {
         const answer = await ConfirmCoverPrompt(path.basename(targetPath));
         !answer.confirm && Exit(); 

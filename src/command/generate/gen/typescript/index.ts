@@ -21,7 +21,7 @@ const BuildTSPackageInfo = (usedMemory: UsedMemoryType): PackageInfo => {
 }
 
 const GenTSConfig = async (usedMemory: UsedMemoryType, context: GenerateContext): Promise<PackageInfo> => {
-    const targetPath = path.resolve(context.targetPath, 'tsconfig2.json');
+    const targetPath = path.resolve(context.targetPath, `tsconfig${context.suffix}.json`);
     if(!context.forceCover && fs.existsSync(targetPath)) {
         const answer = await ConfirmCoverPrompt(path.basename(targetPath));
         !answer.confirm && Exit(); 

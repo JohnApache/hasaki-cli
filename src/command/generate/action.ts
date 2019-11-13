@@ -51,7 +51,7 @@ const GenPlugin = async (
 
 const GenPackage = (context: GenerateContext): void => {
 	const packagePath = path.resolve(process.cwd(), "package.json");
-	const newPackagePath = path.resolve(context.targetPath, "package2.json");
+	const newPackagePath = path.resolve(context.targetPath, `package${context.suffix}.json`);
 	let packageJson: PackageInfo = {};
 	if (fs.existsSync(packagePath) && fs.statSync(packagePath).isFile()) {
 		packageJson = require(packagePath);
@@ -90,7 +90,8 @@ const GenUsedMemory = (pluginList: string[]): UsedMemoryType => {
 const BuildGenerateContext = (cmd: Command): GenerateContext => {
 	const outDir: string = cmd.outDir || "";
     const rootPath: string = process.cwd();
-    const forceCover: boolean = cmd.forceCover || false;
+	const forceCover: boolean = cmd.forceCover || false;
+	const suffix: string = cmd.suffix || '';
 	let targetPath: string;
 	if (path.isAbsolute(outDir)) {
 		targetPath = outDir;
@@ -101,7 +102,8 @@ const BuildGenerateContext = (cmd: Command): GenerateContext => {
 	return {
 		rootPath,
         targetPath,
-        forceCover,
+		forceCover,
+		suffix
 	};
 };
 

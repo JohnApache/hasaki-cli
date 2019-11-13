@@ -87,7 +87,7 @@ const GenESLintConfig = (usedMemory: UsedMemoryType, context: GenerateContext): 
             count === 0 && resolve(BuildESLintPackageInfo(usedMemory))
         }
 
-        const targetPath1 = path.resolve(context.targetPath, './.eslintrc2.js');
+        const targetPath1 = path.resolve(context.targetPath, `./.eslintrc${context.suffix}.js`);
         if(!context.forceCover && fs.existsSync(targetPath1)) {
             const answer = await ConfirmCoverPrompt(path.basename(targetPath1));
             !answer.confirm && Exit(); 
@@ -100,7 +100,7 @@ const GenESLintConfig = (usedMemory: UsedMemoryType, context: GenerateContext): 
             onTaskEnd
         );
     
-        const targetPath2 = path.resolve(context.targetPath, './.eslintignore2');
+        const targetPath2 = path.resolve(context.targetPath, `./.eslintignore${context.suffix}`);
         if(!context.forceCover && fs.existsSync(targetPath2)) {
             const answer = await ConfirmCoverPrompt(path.basename(targetPath2));
             !answer.confirm && Exit(); 

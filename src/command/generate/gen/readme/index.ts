@@ -15,7 +15,7 @@ const GenReadmeConfig = async (usedMemory: UsedMemoryType, context: GenerateCont
         }
 
         
-        const targetPath1 = path.resolve(context.targetPath, './README2.en_US.md');
+        const targetPath1 = path.resolve(context.targetPath, `./README${context.suffix}.en_US.md`);
         if(!context.forceCover && fs.existsSync(targetPath1)) {
             const answer = await ConfirmCoverPrompt(path.basename(targetPath1));
             !answer.confirm && Exit(); 
@@ -27,8 +27,8 @@ const GenReadmeConfig = async (usedMemory: UsedMemoryType, context: GenerateCont
             onTaskEnd
         )
 
-        const targetPath2 = path.resolve(context.targetPath, './README2.md');
-        if(!context.forceCover && fs.existsSync(targetPath1)) {
+        const targetPath2 = path.resolve(context.targetPath, `./README${context.suffix}.md`);
+        if(!context.forceCover && fs.existsSync(targetPath2)) {
             const answer = await ConfirmCoverPrompt(path.basename(targetPath2));
             !answer.confirm && Exit(); 
         }
