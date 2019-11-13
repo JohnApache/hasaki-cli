@@ -4,11 +4,13 @@ module.exports =  {
       ecmaVersion: 2018, // Allows for the parsing of modern ECMAScript features
       sourceType: 'module', // Allows for the use of imports
       ecmaFeatures: {
+        <%_ if(locals.react){ _%>
         jsx: true
+        <%_ } _%>  
       },
     },
     extends:  [
-      'airbnb',  // Uses airbnb, it including the react rule(eslint-plugin-react/eslint-plugin-jsx-a11y)
+      <% if(locals.react){ _%>'airbnb'<%_ } else { _%>'airbnb-base'<%_ } _%>,  // Uses airbnb, it including the react rule(eslint-plugin-react/eslint-plugin-jsx-a11y)
       <%_ if(locals.typescript){ _%>
       'plugin:@typescript-eslint/recommended', // Optional enable, will more stricter
       <%_ } _%>  
@@ -49,6 +51,7 @@ module.exports =  {
       'no-useless-constructor': 0,
       'no-console': 0,
       'class-methods-use-this': 0,
+      'indent': ['error', 4],
       <%_ if(locals.react){ _%>
       'jsx-a11y/click-events-have-key-events': 0,
       'jsx-a11y/no-static-element-interactions': 0,
@@ -66,7 +69,7 @@ module.exports =  {
        */
       '@typescript-eslint/prefer-interface': 'off', // also want to use 'type'
       '@typescript-eslint/explicit-function-return-type': 'off', // annoying to force return type
-      '@typescript-eslint/indent': 'off' // avoid conflict with airbn
+      '@typescript-eslint/indent': ['error', 4] // avoid conflict with airbn
       <%_ } _%>  
 
 

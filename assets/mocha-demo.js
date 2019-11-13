@@ -16,10 +16,6 @@ const add = (...nums) => {
 
 describe('add()方法测试', function() {
     this.timeout(5000)
-    it('add方法的参数必须都是数字，否则会抛出异常', () => {
-        expect(add.bind(null, '3')).to.throw(TypeError)
-    });
-
     it('add方法不传值的时候返回的是0', () => {
         expect(add()).to.equal(0)
     });

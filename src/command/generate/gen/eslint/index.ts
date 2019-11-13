@@ -34,9 +34,9 @@ const BuildESLintPackageInfo = (usedMemory: UsedMemoryType): PackageInfo => {
         },
     };
 
-    const useTs = packageInfo['typescript'];
-    const useReact = packageInfo['react'];
-    const useBabel = packageInfo['babel'];
+    const useTs = usedMemory['typescript'];
+    const useReact = usedMemory['react'];
+    const useBabel = usedMemory['babel'];
 
     if(useReact) {
         packageInfo = _.merge(packageInfo, {
@@ -75,7 +75,7 @@ const BuildESLintPackageInfo = (usedMemory: UsedMemoryType): PackageInfo => {
             },
         })
     }
- 
+    
     return packageInfo;
 }
 

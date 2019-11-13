@@ -70,10 +70,10 @@ const GenPackage = (context: GenerateContext): void => {
 	});
 
 	EP.once("on_generate_finish", () => {
-		packageJson["scripts"] = SortObjectByKey(packageJson["scripts"]);
-		packageJson["dependencies"] = SortObjectByKey(packageJson["dependencies"]);
+		packageJson["scripts"] = SortObjectByKey(packageJson["scripts"] || {});
+		packageJson["dependencies"] = SortObjectByKey(packageJson["dependencies"] || {});
 		packageJson["devDependencies"] = SortObjectByKey(
-			packageJson["devDependencies"]
+			packageJson["devDependencies"] || {}
 		);
 		fs.writeFileSync(newPackagePath, JSON.stringify(packageJson, null, 2));
 	});
