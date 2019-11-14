@@ -34,7 +34,7 @@ module.exports =  {
           directory: './tsconfig.json'
         },
         <%_ } _%>  
-        <%_ if(locals.webpack){ _%>
+        <%_ if(locals.react || locals.webpack){ _%>
         webpack: {
           config: './webpack.config.js'
         }
@@ -42,7 +42,11 @@ module.exports =  {
       }
     },
     env: {
-      browser: true // enable all browser global variables
+      browser: true, // enable all browser global variables
+      commonjs: true,
+      es6: true,
+      jest: true,
+      node: true
     },
     plugins: [<% if(locals.typescript) { %>'@typescript-eslint', <% } %><% if(locals.react) { %>'react-hooks', <% } %>'promise'],
     rules:  {

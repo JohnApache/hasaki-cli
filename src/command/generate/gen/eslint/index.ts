@@ -25,7 +25,6 @@ const BuildESLintPackageInfo = (usedMemory: UsedMemoryType): PackageInfo => {
         },
         "devDependencies": {
             "eslint": "^6.6.0",
-            "eslint-import-resolver-webpack": "^0.11.1",
             "eslint-plugin-import": "^2.18.2",
             "eslint-plugin-promise": "^4.1.1",
             "husky": "^2.3.0",
@@ -37,6 +36,7 @@ const BuildESLintPackageInfo = (usedMemory: UsedMemoryType): PackageInfo => {
     const useTs = usedMemory['typescript'];
     const useReact = usedMemory['react'];
     const useBabel = usedMemory['babel'];
+    const useWebpack = usedMemory['webpack'];
 
     if(useReact) {
         packageInfo = _.merge(packageInfo, {
@@ -44,13 +44,21 @@ const BuildESLintPackageInfo = (usedMemory: UsedMemoryType): PackageInfo => {
                 "eslint-config-airbnb": "^18.0.1",
                 "eslint-plugin-jsx-a11y": "^6.2.3",
                 "eslint-plugin-react": "^7.16.0",
-                "eslint-plugin-react-hooks": "^1.7.0"
+                "eslint-plugin-react-hooks": "^1.7.0",
             },
         })
     } else {
         packageInfo = _.merge(packageInfo, {
             "devDependencies": {
                 "eslint-config-airbnb-base": "^14.0.0",
+            },
+        })
+    }
+
+    if(useReact || useWebpack) {
+        packageInfo = _.merge(packageInfo, {
+            "devDependencies": {
+                "eslint-import-resolver-webpack": "^0.11.1",
             },
         })
     }
@@ -72,6 +80,7 @@ const BuildESLintPackageInfo = (usedMemory: UsedMemoryType): PackageInfo => {
             "devDependencies": {
                 "@typescript-eslint/eslint-plugin": "^2.6.0",
                 "@typescript-eslint/parser": "^2.6.0",
+                "eslint-import-resolver-typescript": "^2.0.0"
             },
         })
     }
