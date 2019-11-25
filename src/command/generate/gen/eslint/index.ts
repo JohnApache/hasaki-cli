@@ -7,15 +7,21 @@ import { ConfirmCoverPrompt } from "../../prompt";
 import { Exit } from "../../../../common";
 
 const BuildESLintPackageInfo = (usedMemory: UsedMemoryType): PackageInfo => {
+
+    const useTs = usedMemory['typescript'];
+    const useReact = usedMemory['react'];
+    const useBabel = usedMemory['babel'];
+    const useWebpack = usedMemory['webpack'];
+
     let packageInfo: PackageInfo = {
         "scripts": {
             "lint": "eslint src --ext .jsx --ext .js --cache --fix",
             "format": "prettier-eslint 'src/**/*.{js,jsx}' --write"
         },
         "lint-staged": {
-            "**/*.{jsx,js}": [
-              "prettier-eslint --write",
-              "git add"
+            [`**/*.{jsx,js${useTs ? ',ts,tsx' : ''}}`]: [
+                "prettier-eslint --write",
+                "git add"
             ]
         },
         "husky": {
@@ -32,11 +38,6 @@ const BuildESLintPackageInfo = (usedMemory: UsedMemoryType): PackageInfo => {
             "prettier-eslint-cli": "^4.7.1",
         },
     };
-
-    const useTs = usedMemory['typescript'];
-    const useReact = usedMemory['react'];
-    const useBabel = usedMemory['babel'];
-    const useWebpack = usedMemory['webpack'];
 
     if(useReact) {
         packageInfo = _.merge(packageInfo, {
@@ -84,7 +85,7 @@ const BuildESLintPackageInfo = (usedMemory: UsedMemoryType): PackageInfo => {
             },
         })
     }
-    
+
     return packageInfo;
 }
 

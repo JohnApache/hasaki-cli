@@ -1,20 +1,80 @@
-import clone from '../../git/clone';
-import {FileCleanner} from '../../piper';
-const getRemoteTemplate = async (source: string, dest: string): Promise<void> => {
-    const [
-        repo, 
-        branch = 'master'
-    ] = source.split('#');
+import path from "path";
+import chalk from "chalk";
+import dgit from "@dking/dgit";
+import ProgressBar from "progress";
 
-    await clone({
-        repo,
-        dest,
-        branch,
-        shallow: true,
-        depth: 1,
-    });
-    
-    await FileCleanner(`${dest}/.git`);
-}
+import CreateLoading from "../../loading";
 
-export default getRemoteTemplate;
+import { PasswordPrompt } from "./prompt";
+import { ActionOptions } from "./type";
+import { Exit } from "../../common";
+import ParseRender from "../../piper/parseRender";
+
+const TextEllipsis = (text: string, maxLen: number): string =>
+  text.length >= maxLen ? `${text.slice(0, maxLen)}...` : text;
+
+export const DownloadHandle = async (
+  repo: string,
+  dest: string,
+  options: ActionOptions
+): Promise<void> => {
+  let { username, password, token } = options;
+
+  if (username && !password) {
+    password = await PasswordPrompt(username);
+  }
+
+  const ld = CreateLoading(
+    `downloading template from remote ${chalk.blue.underline(repo)} ...`
+  );
+
+  let bar: ProgressBar;
+  try {
+    ld.start();
+    await dgit(
+      {
+        githubLink: repo,
+        username,
+        password,
+        token
+      },
+      dest,
+      {
+        log: false,
+        parallelLimit: 10
+      },
+      {
+        beforeLoadTree() {
+          ld.start();
+        },
+        afterLoadTree() {
+          ld.succeed("load remote repo tree succeed! ");
+        },
+        onResolved(status) {
+          const green = "\u001b[42m \u001b[0m";
+          const red = "\u001b[41m \u001b[0m";
+          bar = new ProgressBar(
+            "  DOWNLOAD |:bar| :current/:total :percent elapsed: :elapseds eta: :eta :file, done.",
+            {
+              total: status.totalCount,
+              width: 50,
+              complete: green,
+              incomplete: red
+            }
+          );
+        },
+        onProgress(_, node) {
+          bar.tick({
+            file: TextEllipsis(node.path, 30)
+          });
+        },
+      }
+    );
+
+    ld.succeed("dowload template success!");
+  } catch (error) {
+    console.log(error);
+    ld.fail("dowload template failed!");
+    return Exit();
+  }
+};

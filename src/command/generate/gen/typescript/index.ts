@@ -8,8 +8,8 @@ import { Exit } from "../../../../common";
 const BuildTSPackageInfo = (usedMemory: UsedMemoryType): PackageInfo => {
     let packageInfo = {
         "scripts": {
-            "build:rollup": "tsc --build",
-            "watch:rollup": "tsc --watch"
+            "build:ts": "tsc --build",
+            "watch:ts": "tsc --watch"
         },
         "devDependencies": {
             "typescript": "^3.6.4",

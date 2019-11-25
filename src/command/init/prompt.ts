@@ -9,6 +9,10 @@ interface ConfirmAnswer extends Answers {
     confirm: boolean
 }
 
+interface PasswordAnswer extends Answers {
+    password: string
+}
+
 export const CreatePrompt = (questions: Array<Question>): Promise<Answers> => {
     return inquirer.prompt(questions);
 }
@@ -42,4 +46,17 @@ export const ConfirmDeletePrompt = async (dirname: string): Promise<boolean> => 
     }
     const answers = await CreatePrompt([question]) as ConfirmAnswer;
     return answers.confirm;
+}
+
+export const PasswordPrompt = async (username: string): Promise<string> => {
+    const question = {
+        type: 'password',
+        name: 'password',
+        message: `input ${username}'s git password?`,
+        validate(input: string) {
+            return input && input.length > 0;
+        },  
+    }
+    const answers = await CreatePrompt([question]) as PasswordAnswer;
+    return answers.password;
 }

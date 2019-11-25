@@ -1,4 +1,5 @@
 /.git
 /.vscode
 /dist
+.eslintrc.js
 node_modules

@@ -1,11 +1,15 @@
 import path from 'path';
 
 import {TEMPLATE_REPO_TMP_DIRNAME} from '../../config/definition';
-import {ActionOptions, BeforeInitHandle, DownloadHandle, RepoPipeHandle} from '../init/action';
 import {FileCleanner} from '../../piper'
 import {ProjectNamePrompt} from './prompt';
 import {SuccessLog} from '../../common/log';
 import { Command } from 'commander';
+import { ActionOptions } from '../init/type';
+import { BeforeInitHandle } from '../init/beforeInit';
+import { DownloadHandle } from '../init/download';
+import { RepoPipeHandle } from '../init/repoPipe';
+
 const SetProjectName = async (): Promise<string> => {
     const answers = await ProjectNamePrompt();
     return answers.projectName;
@@ -17,7 +21,7 @@ const InstallAction = async (remoteAddress: string, command: Command): Promise<v
     const targetPath = path.resolve(process.cwd(), options.outDir || '', projectName);
     const tmpRepoPath = path.resolve(process.cwd(), options.config || TEMPLATE_REPO_TMP_DIRNAME);
     await BeforeInitHandle(projectName, options);
-    await DownloadHandle(remoteAddress, tmpRepoPath);
+    await DownloadHandle(remoteAddress, tmpRepoPath, options);
     await RepoPipeHandle(tmpRepoPath, targetPath, options);
     await FileCleanner(tmpRepoPath);
     SuccessLog(`create ${projectName} success!`);

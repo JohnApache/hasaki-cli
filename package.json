@@ -1,6 +1,6 @@
 {
   "name": "@dking/hasaki-cli",
-  "version": "0.0.3",
+  "version": "0.0.5",
   "description": "自动化构建react, vue, jquery, js类库, koa/express/egg项目, node-plugin, typescript 等等多种项目结构初始化",
   "main": "index.js",
   "bin": {
@@ -13,6 +13,7 @@
     "assets": "assets"
   },
   "dependencies": {
+    "@dking/dgit": "^0.0.7",
     "@dking/event-proxy": "^1.0.1",
     "@types/lodash": "^4.14.144",
     "chalk": "^2.4.2",
@@ -20,7 +21,8 @@
     "ejs": "^2.6.2",
     "inquirer": "^7.0.0",
     "lodash": "^4.17.15",
-    "ora": "^3.4.0"
+    "ora": "^3.4.0",
+    "progress": "^2.0.3"
   },
   "devDependencies": {
     "@types/chai": "^4.2.0",

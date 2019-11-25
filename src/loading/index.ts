@@ -1,7 +1,7 @@
 import ora, {Ora} from 'ora';
 
-const createLoading = (loadingText: string): Ora => {
+const CreateLoading = (loadingText: string): Ora => {
     return ora(loadingText);
 }
 
-export default createLoading;
+export default CreateLoading;

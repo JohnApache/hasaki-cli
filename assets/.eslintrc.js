@@ -56,6 +56,17 @@ module.exports =  {
       'no-console': 0,
       'class-methods-use-this': 0,
       'indent': ['error', 4],
+      'func-names': 0,
+      'no-unused-expressions': 0,
+      'no-plusplus': 0,
+      'import/prefer-default-export': 0,
+      'no-param-reassign': 0,
+      'max-len': ['error', {
+        'code': 120,
+        'ignoreStrings': true,
+        'ignoreTemplateLiterals': true
+      }],
+      'consistent-return': 0,
       <%_ if(locals.react){ _%>
       'jsx-a11y/click-events-have-key-events': 0,
       'jsx-a11y/no-static-element-interactions': 0,
@@ -73,7 +84,8 @@ module.exports =  {
        */
       '@typescript-eslint/prefer-interface': 'off', // also want to use 'type'
       '@typescript-eslint/explicit-function-return-type': 'off', // annoying to force return type
-      '@typescript-eslint/indent': ['error', 4] // avoid conflict with airbn
+      '@typescript-eslint/indent': ['error', 4], // avoid conflict with airbn
+      '@typescript-eslint/no-explicit-any': 'off'
       <%_ } _%>  
 
 
