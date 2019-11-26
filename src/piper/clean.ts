@@ -1,6 +1,7 @@
 import fs from 'fs';
 const Clean = (targets: Array<string>, callback: Function) => {
     targets.forEach(deletePath => {
+        if(!fs.existsSync(deletePath)) return; 
         const stat = fs.statSync(deletePath);
         if(stat.isFile()) {
             return fs.unlinkSync(deletePath);

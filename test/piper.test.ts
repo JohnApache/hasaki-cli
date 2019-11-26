@@ -2,6 +2,7 @@ import fs from 'fs';
 import path from 'path';
 import {expect} from 'chai';
 import {FileCleanner, FilePiper} from '../src/piper';
+import {MakeDirs} from '../src/piper/utils';
 import Analyse from '../src/piper/analyse';
 
 describe('piper文件中转功能单元测试', () => {
@@ -159,6 +160,7 @@ describe('piper文件中转功能单元测试', () => {
                     /tmp3.json$/
                 ]
             });
+            
             expect(fs.readFileSync(tmp1.replace(tmpDir, targetDir)).toString() === '测试文本000');
             expect(fs.readFileSync(tmp2.replace(tmpDir, targetDir)).toString() === 'const ddd = "000"');
             expect(fs.readFileSync(tmp3.replace(tmpDir, targetDir)).toString() === '{"name":"<%= author%>"}');
@@ -300,5 +302,28 @@ describe('piper文件中转功能单元测试', () => {
             const analyseResult = Analyse(otherTmp2);
             expect(analyseResult).to.deep.equal({});
         });
+    })
+
+    describe('Utils 方法测试', () => {
+        const tmp = path.resolve(__dirname, './a')
+        const dir = path.resolve(tmp, './b/c');
+
+        before(async () => {
+            if(fs.existsSync(tmp)) {
+                await FileCleanner(path.resolve(__dirname, './a'))
+            }
+        })
+
+        after(async () => {
+            if(fs.existsSync(tmp)) {
+                await FileCleanner(path.resolve(__dirname, './a'))
+            }
+        })
+
+        it('MakeDirs() 可以创建多级目录', () => {
+            MakeDirs(dir);
+            expect(fs.existsSync(dir)).to.be.ok;
+            expect(fs.statSync(dir).isDirectory()).to.be.ok;
+        })
     })
 })

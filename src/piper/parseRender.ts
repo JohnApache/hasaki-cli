@@ -2,6 +2,7 @@ import ejs from 'ejs';
 import fs from 'fs';
 import path from 'path';
 import Copy from './copy';
+import { MakeDirs } from './utils';
 const ParseRender = (
         sourcePath: string, 
         targetPath: string, 
@@ -18,7 +19,7 @@ const ParseRender = (
             return;
         }
         if(!fs.existsSync(path.dirname(targetPath))) {
-            fs.mkdirSync(path.dirname(targetPath), { recursive: true });
+            MakeDirs(path.dirname(targetPath))
         }
         fs.writeFileSync(targetPath, data);
         callback && callback();
