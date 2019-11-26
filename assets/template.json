@@ -1,46 +1,46 @@
 [
     {
         "templateName": "vue-project",
-        "remoteAddress": "https://github.com/JohnApache/events-proxy#test-cli"
+        "remoteAddress": "https://github.com/JohnApache/hasaki-template/tree/master/react"
     },
     {
         "templateName": "react-project",
-        "remoteAddress": "https://github.com/JohnApache/events-proxy#test-cli"
+        "remoteAddress": "https://github.com/JohnApache/hasaki-template/tree/master/react"
     },
     {
         "templateName": "vue-component",
-        "remoteAddress": "https://github.com/JohnApache/events-proxy#test-cli"
+        "remoteAddress": "https://github.com/JohnApache/events-proxy/tree/test-cli"
     },
     {
         "templateName": "react-component",
-        "remoteAddress": "https://github.com/JohnApache/events-proxy#test-cli"
+        "remoteAddress": "https://github.com/JohnApache/hasaki-template/tree/master/react"
     },
     {
         "templateName": "jquery-project",
-        "remoteAddress": "https://github.com/JohnApache/events-proxy#test-cli"
+        "remoteAddress": "https://github.com/JohnApache/hasaki-template/tree/master/react"
     },
     {
         "templateName": "jquery-plugin",
-        "remoteAddress": "https://github.com/JohnApache/events-proxy#test-cli"
+        "remoteAddress": "https://github.com/JohnApache/hasaki-template/tree/master/react"
     },
     {
         "templateName": "js-lib",
-        "remoteAddress": "https://github.com/JohnApache/events-proxy#test-cli"
+        "remoteAddress": "https://github.com/JohnApache/hasaki-template/tree/master/react"
     },
     {
         "templateName": "koa-project",
-        "remoteAddress": "https://github.com/JohnApache/events-proxy#test-cli"
+        "remoteAddress": "https://github.com/JohnApache/hasaki-template/tree/master/react"
     },
     {
         "templateName": "express-project",
-        "remoteAddress": "https://github.com/JohnApache/events-proxy#test-cli"
+        "remoteAddress": "https://github.com/JohnApache/hasaki-template/tree/master/react"
     },
     {
         "templateName": "egg-project",
-        "remoteAddress": "https://github.com/JohnApache/events-proxy#test-cli"
+        "remoteAddress": "https://github.com/JohnApache/hasaki-template/tree/master/react"
     },
     {
         "templateName": "node-lib",
-        "remoteAddress": "https://github.com/JohnApache/events-proxy#test-cli"
+        "remoteAddress": "https://github.com/JohnApache/hasaki-template/tree/master/react"
     }
 ]
