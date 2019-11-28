@@ -33,7 +33,7 @@
     "@typescript-eslint/eslint-plugin": "^2.6.0",
     "@typescript-eslint/parser": "^2.6.0",
     "chai": "^4.2.0",
-    "eslint": "^6.6.0",
+    "eslint": "6.6.0",
     "eslint-config-airbnb-base": "^14.0.0",
     "eslint-import-resolver-typescript": "^2.0.0",
     "eslint-plugin-import": "^2.18.2",
@@ -48,7 +48,7 @@
   },
   "scripts": {
     "build": "tsc --build",
-    "format": "prettier-eslint '/Users/cuijianwei/WebstormProjects/myproject/hasaki-cli/src/**/*.{ts,tsx}' --write",
+    "format": "prettier-eslint 'src/**/*.{ts,tsx}' --write",
     "lint": "eslint src --ext .jsx --ext .js --ext .tsx --ext .ts --cache --fix",
     "prepublishOnly": "npm run test && npm run build",
     "test": "mocha --require ts-node/register 'test/**/*.{ts,tsx}' -t 5000",
