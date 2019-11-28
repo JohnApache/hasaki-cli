@@ -7,33 +7,31 @@ import Copy from './copy';
 import { ScreenRule, MatchRules } from './analyse';
 
 export type ParseOption = {
-    parseInclude?: MatchRules,
-    parseExclude?: MatchRules,
-    ignore?: MatchRules,
-    parseData?: Object,
-    screenRule?: ScreenRule,
-}
+    parseInclude?: MatchRules;
+    parseExclude?: MatchRules;
+    ignore?: MatchRules;
+    parseData?: Record<string, any>;
+    screenRule?: ScreenRule;
+};
 
-export const FileCleanner = (...cleanItem: string[]): Promise<void> => {
-    return new Promise((resolve, reject) => {
+export const FileCleanner = (...cleanItem: string[]): Promise<void> =>
+    new Promise((resolve, reject) => {
         try {
             Clean(cleanItem, () => {
                 resolve();
-            })
+            });
         } catch (error) {
             console.error(error);
             reject(error);
         }
     });
-}
 
 export const FilePiper = (
-        source: string, 
-        target: string, 
-        parseOption: ParseOption,
-    ): Promise<void> => {
-    return new Promise((resolve, reject) => {
-       
+    source: string,
+    target: string,
+    parseOption: ParseOption
+): Promise<void> =>
+    new Promise((resolve, reject) => {
         const {
             ignore = [],
             parseExclude = [],
@@ -41,20 +39,23 @@ export const FilePiper = (
             parseData = {},
             screenRule = {
                 exclude: [],
-                include: []
-            }
+                include: [],
+            },
         } = parseOption || {};
 
         let count = 0;
         const onTaskEnd = () => {
             count--;
-            if(count === 0) {
+            if (count === 0) {
                 resolve();
             }
         };
 
         const Scanner = CreateScanner(source, ignore);
-        const TransferStation = CreateTransferStation(source, { parseExclude, parseInclude });
+        const TransferStation = CreateTransferStation(source, {
+            parseExclude,
+            parseInclude,
+        });
         const Screener = CreateScreener(source, screenRule);
 
         try {
@@ -63,19 +64,23 @@ export const FilePiper = (
                     const targetFile = screenPath.replace(source, target);
                     count++;
                     TransferStation(
-                        targetFile, 
+                        targetFile,
                         () => {
-                            ParseRender(screenPath, targetFile, parseData, onTaskEnd);
+                            ParseRender(
+                                screenPath,
+                                targetFile,
+                                parseData,
+                                onTaskEnd
+                            );
                         },
                         () => {
                             Copy(screenPath, targetFile, onTaskEnd);
                         }
-                    )
-                })
-            })
+                    );
+                });
+            });
         } catch (error) {
             console.log(error);
             reject(error);
         }
-    })
-}
+    });

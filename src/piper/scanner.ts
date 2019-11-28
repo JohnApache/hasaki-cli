@@ -5,42 +5,39 @@ import { MatchRules, IsMatchRules } from './analyse';
 
 const CreateScanner = (rootPath: string, ignore: MatchRules) => {
     const AllIgnore = DefaultIgnore.concat(ignore);
-    const IsIgnore = (targetPath: string): boolean => {
-        return IsMatchRules(rootPath, targetPath, AllIgnore);
-    }
+    const IsIgnore = (targetPath: string): boolean =>
+        IsMatchRules(rootPath, targetPath, AllIgnore);
 
     const Scanner = (
-        targetDir: string, 
+        targetDir: string,
         callback?: (filePath: string) => void
     ): void => {
-       
-        if(IsIgnore(targetDir)) return;
+        if (IsIgnore(targetDir)) return;
 
-        if(!fs.existsSync(targetDir)) {
+        if (!fs.existsSync(targetDir)) {
             throw new Error('targetDir is not exists.');
         }
         const stat = fs.statSync(targetDir);
-        if(stat.isFile()) {
+        if (stat.isFile()) {
             callback && callback(targetDir);
             return;
         }
-        if(stat.isDirectory()) {
+        if (stat.isDirectory()) {
             const files = fs.readdirSync(targetDir);
             files.forEach(filename => {
                 const filepath = `${targetDir}/${filename}`;
-                const stat = fs.statSync(filepath);
-                if(stat.isFile() && !IsIgnore(filepath)) {
+                const sstat = fs.statSync(filepath);
+                if (sstat.isFile() && !IsIgnore(filepath)) {
                     callback && callback(filepath);
                     return;
                 }
-                if(stat.isDirectory()) {
+                if (sstat.isDirectory()) {
                     Scanner(filepath, callback);
                 }
-            })
-           
+            });
         }
-    }
+    };
     return Scanner;
-}
+};
 
 export default CreateScanner;

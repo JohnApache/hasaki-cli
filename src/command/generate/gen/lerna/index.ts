@@ -1,15 +1,12 @@
-import ParseRender from "../../../../piper/parseRender"
-import path from "path";
-import { UsedMemoryType, PackageInfo } from "../../type";
+import { UsedMemoryType, PackageInfo } from '../../type';
 
 const BuildLernaPackageInfo = (usedMemory: UsedMemoryType): PackageInfo => {
-    let packageInfo: PackageInfo = {}
-
+    const packageInfo: PackageInfo = {};
+    console.log(usedMemory);
     return packageInfo;
-}
+};
 
-const GenLernaConfig = (usedMemory: UsedMemoryType): PackageInfo => {
-    return BuildLernaPackageInfo(usedMemory);
-}
+const GenLernaConfig = (usedMemory: UsedMemoryType): PackageInfo =>
+    BuildLernaPackageInfo(usedMemory);
 
 export default GenLernaConfig;

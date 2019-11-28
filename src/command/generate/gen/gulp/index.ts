@@ -1,15 +1,12 @@
-import ParseRender from "../../../../piper/parseRender"
-import path from "path";
-import { UsedMemoryType, PackageInfo } from "../../type";
+import { UsedMemoryType, PackageInfo } from '../../type';
 
 const BuildGulpPackageInfo = (usedMemory: UsedMemoryType): PackageInfo => {
-    let packageInfo: PackageInfo = {}
-
+    const packageInfo: PackageInfo = {};
+    console.log(usedMemory);
     return packageInfo;
-}
+};
 
-const GenGulpConfig = (usedMemory: UsedMemoryType): PackageInfo => {
-    return BuildGulpPackageInfo(usedMemory);
-}
+const GenGulpConfig = (usedMemory: UsedMemoryType): PackageInfo =>
+    BuildGulpPackageInfo(usedMemory);
 
 export default GenGulpConfig;

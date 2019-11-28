@@ -1,21 +1,20 @@
-import {GetTemplates, Template} from '../../config/template';
-import inquirer, {Question, Answers} from 'inquirer';
+import inquirer, { Question, Answers } from 'inquirer';
+import { GetTemplates, Template } from '../../config/template';
 
 interface TemplateAnswer extends Answers {
-    template: Template
+    template: Template;
 }
 
 interface ConfirmAnswer extends Answers {
-    confirm: boolean
+    confirm: boolean;
 }
 
 interface PasswordAnswer extends Answers {
-    password: string
+    password: string;
 }
 
-export const CreatePrompt = (questions: Array<Question>): Promise<Answers> => {
-    return inquirer.prompt(questions);
-}
+export const CreatePrompt = (questions: Array<Question>): Promise<any> =>
+    inquirer.prompt(questions);
 
 export const ChooseTemplatePrompt = async (): Promise<Template> => {
     const question = {
@@ -24,29 +23,28 @@ export const ChooseTemplatePrompt = async (): Promise<Template> => {
         message: 'choose a template you want.',
         choices() {
             const templates = GetTemplates();
-            return templates.map(t => {
-                return {
-                    name: t.templateName,
-                    value: t
-                }
-            })
-        }
-    }
-    const answers = await CreatePrompt([question]) as TemplateAnswer;
+            return templates.map(t => ({
+                name: t.templateName,
+                value: t,
+            }));
+        },
+    };
+    const answers: TemplateAnswer = await CreatePrompt([question]);
     return answers.template;
-}
+};
 
-
-export const ConfirmDeletePrompt = async (dirname: string): Promise<boolean> => {
+export const ConfirmDeletePrompt = async (
+    dirname: string
+): Promise<boolean> => {
     const question = {
         type: 'confirm',
         name: 'confirm',
         message: `do you confirm delete ${dirname}?`,
         default: false,
-    }
-    const answers = await CreatePrompt([question]) as ConfirmAnswer;
+    };
+    const answers: ConfirmAnswer = await CreatePrompt([question]);
     return answers.confirm;
-}
+};
 
 export const PasswordPrompt = async (username: string): Promise<string> => {
     const question = {
@@ -55,8 +53,8 @@ export const PasswordPrompt = async (username: string): Promise<string> => {
         message: `input ${username}'s git password?`,
         validate(input: string) {
             return input && input.length > 0;
-        },  
-    }
-    const answers = await CreatePrompt([question]) as PasswordAnswer;
+        },
+    };
+    const answers: PasswordAnswer = await CreatePrompt([question]);
     return answers.password;
-}
+};

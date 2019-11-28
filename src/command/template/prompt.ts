@@ -1,33 +1,32 @@
-import inquirer, {Question, Answers} from 'inquirer';
-import {GetTemplates, Template} from '../../config/template';
+import inquirer, { Question, Answers } from 'inquirer';
+import { GetTemplates, Template } from '../../config/template';
 
 interface AddPromptAnswers extends Answers {
-    templateName: string,
-    remoteAddress: string
+    templateName: string;
+    remoteAddress: string;
 }
 
 interface DeletePromptAnswers extends Answers {
-    deleteItems: Template[],
-    confirmDelete: boolean | undefined
+    deleteItems: Template[];
+    confirmDelete: boolean | undefined;
 }
 
 interface UpdatePromptAnswers extends Answers {
-    updateItem: Template,
-    templateName: string,
-    remoteAddress: string
+    updateItem: Template;
+    templateName: string;
+    remoteAddress: string;
 }
 
 interface ClearPromptAnswers extends Answers {
-    confirmClear: boolean
+    confirmClear: boolean;
 }
 
 interface ResetPromptAnswers extends Answers {
-    confirmReset: boolean
+    confirmReset: boolean;
 }
 
-export const CreatePrompt = (questions: Question []): Promise<any> => {
-    return inquirer.prompt(questions);
-}
+export const CreatePrompt = (questions: Question[]): Promise<any> =>
+    inquirer.prompt(questions);
 
 export const AddTemplatePrompt = async (): Promise<AddPromptAnswers> => {
     const question = [
@@ -39,14 +38,14 @@ export const AddTemplatePrompt = async (): Promise<AddPromptAnswers> => {
                 return input.trim();
             },
             validate(input: string) {
-                if(input.length === 0) return false;
+                if (input.length === 0) return false;
                 const templates = GetTemplates();
-                if(templates.some(t => t.templateName === input)) {
-                    return 'the current local name has been occupied!'
+                if (templates.some(t => t.templateName === input)) {
+                    return 'the current local name has been occupied!';
                 }
                 return true;
-            }
-        }, 
+            },
+        },
         {
             type: 'input',
             name: 'remoteAddress',
@@ -56,12 +55,12 @@ export const AddTemplatePrompt = async (): Promise<AddPromptAnswers> => {
             },
             validate(input: string): boolean {
                 return input.length > 0;
-            }
-        }
-    ]
+            },
+        },
+    ];
 
     return CreatePrompt(question);
-}
+};
 
 export const DeleteTemplatePrompt = async (): Promise<DeletePromptAnswers> => {
     const question = [
@@ -70,14 +69,12 @@ export const DeleteTemplatePrompt = async (): Promise<DeletePromptAnswers> => {
             name: 'deleteItems',
             message: 'choose one item from the template list.',
             choices() {
-                return GetTemplates().map(t => {
-                    return {
-                        name: t.templateName,
-                        value: t,
-                    }
-                });
+                return GetTemplates().map(t => ({
+                    name: t.templateName,
+                    value: t,
+                }));
             },
-        }, 
+        },
         {
             type: 'confirm',
             name: 'confirmDelete',
@@ -86,10 +83,10 @@ export const DeleteTemplatePrompt = async (): Promise<DeletePromptAnswers> => {
                 return answers.deleteItems && answers.deleteItems.length > 0;
             },
             default: true,
-        }
-    ]
+        },
+    ];
     return CreatePrompt(question);
-}
+};
 
 export const UpdateTemplatePrompt = async (): Promise<UpdatePromptAnswers> => {
     const question = [
@@ -98,13 +95,11 @@ export const UpdateTemplatePrompt = async (): Promise<UpdatePromptAnswers> => {
             name: 'updateItem',
             message: 'choose one item from the template list.',
             choices() {
-                return GetTemplates().map(t => {
-                    return {
-                        name: t.templateName,
-                        value: t
-                    }
-                });
-            }
+                return GetTemplates().map(t => ({
+                    name: t.templateName,
+                    value: t,
+                }));
+            },
         },
         {
             type: 'input',
@@ -117,14 +112,16 @@ export const UpdateTemplatePrompt = async (): Promise<UpdatePromptAnswers> => {
                 return input.trim();
             },
             validate(input: string, answer: Answers) {
-                if(input.length === 0) return false;
-                const templates = GetTemplates().filter(v => v.templateName !== answer.updateItem.templateName);
-                if(templates.some(t => t.templateName === input)) {
-                    return 'the current local name has been occupied!'
+                if (input.length === 0) return false;
+                const templates = GetTemplates().filter(
+                    v => v.templateName !== answer.updateItem.templateName
+                );
+                if (templates.some(t => t.templateName === input)) {
+                    return 'the current local name has been occupied!';
                 }
                 return true;
-            }
-        }, 
+            },
+        },
         {
             type: 'input',
             name: 'remoteAddress',
@@ -137,11 +134,11 @@ export const UpdateTemplatePrompt = async (): Promise<UpdatePromptAnswers> => {
             },
             validate(input: string): boolean {
                 return input.length > 0;
-            }
-        }
-    ]
+            },
+        },
+    ];
     return CreatePrompt(question);
-}
+};
 
 export const ClearTemplatePrompt = async (): Promise<ClearPromptAnswers> => {
     const question = [
@@ -150,12 +147,11 @@ export const ClearTemplatePrompt = async (): Promise<ClearPromptAnswers> => {
             name: 'confirmClear',
             message: 'confirm delete all template from list?',
             default: false,
-        }
-    ]
+        },
+    ];
 
     return CreatePrompt(question);
-}
-
+};
 
 export const ResetTemplatePrompt = async (): Promise<ResetPromptAnswers> => {
     const question = [
@@ -164,10 +160,10 @@ export const ResetTemplatePrompt = async (): Promise<ResetPromptAnswers> => {
             name: 'confirmReset',
             message: 'confirm reset templates list?',
             default: false,
-        }
-    ]
+        },
+    ];
     return CreatePrompt(question);
-}
+};
 
 // (async () => {
 //     const answers = await DeleteTemplatePrompt();

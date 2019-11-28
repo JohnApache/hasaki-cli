@@ -1,12 +1,11 @@
-import inquirer, {Question, Answers} from 'inquirer';
+import inquirer, { Question, Answers } from 'inquirer';
 
 interface ProjectPromptAnswers extends Answers {
-    projectName: string
+    projectName: string;
 }
 
-export const CreatePrompt = (questions: Array<Question>): Promise<any> => {
-    return inquirer.prompt(questions);
-}
+export const CreatePrompt = (questions: Array<Question>): Promise<any> =>
+    inquirer.prompt(questions);
 
 export const ProjectNamePrompt = async (): Promise<ProjectPromptAnswers> => {
     const question = [
@@ -19,8 +18,8 @@ export const ProjectNamePrompt = async (): Promise<ProjectPromptAnswers> => {
             },
             validate(input: string) {
                 return input.length > 0;
-            }
-        }
+            },
+        },
     ];
     return CreatePrompt(question);
-}
+};

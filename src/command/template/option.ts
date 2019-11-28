@@ -1,4 +1,4 @@
-import { Command } from "commander";
+import { Command } from 'commander';
 
 const TemplateOption = (command: Command): Command => {
     command
@@ -7,9 +7,9 @@ const TemplateOption = (command: Command): Command => {
         .option('--update', 'update one template info in templates.')
         .option('--delete', 'delete a template into template.')
         .option('--clear', 'clear all template into template.')
-        .option('--reset', 'reset templates list.')
+        .option('--reset', 'reset templates list.');
 
     return command;
-}
+};
 
 export default TemplateOption;

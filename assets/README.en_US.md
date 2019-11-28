@@ -59,7 +59,7 @@ $ yarn add :packageName
 ```
 
 ## Questions
-Please open an issue [here](https://github.com/JohnApache/egg-kafka-node/issues).
+Please open an issue [here](https://github.com/JohnApache/hasaki-cli/issues).
 
 ## License
 

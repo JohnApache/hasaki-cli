@@ -1,0 +1,7 @@
+/.git
+/.vscode
+/dist
+.eslintrc.js
+node_modules
+./assets
+./lib

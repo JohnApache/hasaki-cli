@@ -1,106 +1,120 @@
-import ParseRender from "../../../../piper/parseRender"
-import path from "path";
-import fs from "fs";
-import _ from 'lodash'
-import { UsedMemoryType, PackageInfo, GenerateContext } from "../../type";
-import { ConfirmCoverPrompt } from "../../prompt";
-import { Exit } from "../../../../common";
+import path from 'path';
+import fs from 'fs';
+import _ from 'lodash';
+import ParseRender from '../../../../piper/parseRender';
+import { UsedMemoryType, PackageInfo, GenerateContext } from '../../type';
+import { ConfirmCoverPrompt } from '../../prompt';
+import { Exit } from '../../../../common';
 
 const BuildESLintPackageInfo = (usedMemory: UsedMemoryType): PackageInfo => {
-
-    const useTs = usedMemory['typescript'];
-    const useReact = usedMemory['react'];
-    const useBabel = usedMemory['babel'];
-    const useWebpack = usedMemory['webpack'];
+    const useTs = usedMemory.typescript;
+    const useReact = usedMemory.react;
+    const useBabel = usedMemory.babel;
+    const useWebpack = usedMemory.webpack;
 
     let packageInfo: PackageInfo = {
-        "scripts": {
-            "lint": "eslint src --ext .jsx --ext .js --cache --fix",
-            "format": "prettier-eslint 'src/**/*.{js,jsx}' --write"
+        scripts: {
+            lint: 'eslint src --ext .jsx --ext .js --cache --fix',
+            format: "prettier-eslint 'src/**/*.{js,jsx}' --write",
         },
-        "lint-staged": {
+        'lint-staged': {
             [`**/*.{jsx,js${useTs ? ',ts,tsx' : ''}}`]: [
-                "prettier-eslint --write",
-                "git add"
-            ]
+                'prettier-eslint --write',
+                'git add',
+            ],
         },
-        "husky": {
-            "hooks": {
-                "pre-commit": "lint-staged"
-            }
+        husky: {
+            hooks: {
+                'pre-commit': 'lint-staged',
+            },
         },
-        "devDependencies": {
-            "eslint": "^6.6.0",
-            "eslint-plugin-import": "^2.18.2",
-            "eslint-plugin-promise": "^4.1.1",
-            "husky": "^2.3.0",
-            "lint-staged": "^8.1.7",
-            "prettier-eslint-cli": "^4.7.1",
+        prettier: {
+            printWidth: 80,
+            tabWidth: 4,
+            semi: true,
+            singleQuote: true,
+            trailingComma: 'es5',
+            proseWrap: 'preserve',
+        },
+        devDependencies: {
+            eslint: '^6.6.0',
+            'eslint-plugin-import': '^2.18.2',
+            'eslint-plugin-promise': '^4.1.1',
+            husky: '^2.3.0',
+            'lint-staged': '^8.1.7',
+            'prettier-eslint-cli': '^4.7.1',
         },
     };
 
-    if(useReact) {
+    if (useReact) {
         packageInfo = _.merge(packageInfo, {
-            "devDependencies": {
-                "eslint-config-airbnb": "^18.0.1",
-                "eslint-plugin-jsx-a11y": "^6.2.3",
-                "eslint-plugin-react": "^7.16.0",
-                "eslint-plugin-react-hooks": "^1.7.0",
+            devDependencies: {
+                'eslint-config-airbnb': '^18.0.1',
+                'eslint-plugin-jsx-a11y': '^6.2.3',
+                'eslint-plugin-react': '^7.16.0',
+                'eslint-plugin-react-hooks': '^1.7.0',
             },
-        })
+        });
     } else {
         packageInfo = _.merge(packageInfo, {
-            "devDependencies": {
-                "eslint-config-airbnb-base": "^14.0.0",
+            devDependencies: {
+                'eslint-config-airbnb-base': '^14.0.0',
             },
-        })
+        });
     }
 
-    if(useReact || useWebpack) {
+    if (useReact || useWebpack) {
         packageInfo = _.merge(packageInfo, {
-            "devDependencies": {
-                "eslint-import-resolver-webpack": "^0.11.1",
+            devDependencies: {
+                'eslint-import-resolver-webpack': '^0.11.1',
             },
-        })
+        });
     }
 
-    if(!useTs && useBabel) {
+    if (!useTs && useBabel) {
         packageInfo = _.merge(packageInfo, {
-            "devDependencies": {
-                "babel-eslint": "^10.0.1",
+            devDependencies: {
+                'babel-eslint': '^10.0.1',
             },
-        })
+        });
     }
 
-    if(useTs) {
+    if (useTs) {
         packageInfo = _.merge(packageInfo, {
-            "scripts": {
-                "lint": "eslint src --ext .jsx --ext .js --ext .tsx --ext .ts --cache --fix",
-                "format": "prettier-eslint 'src/**/*.{js,jsx,ts,tsx}' --write"
+            scripts: {
+                lint:
+                    'eslint src --ext .jsx --ext .js --ext .tsx --ext .ts --cache --fix',
+                format: "prettier-eslint 'src/**/*.{js,jsx,ts,tsx}' --write",
             },
-            "devDependencies": {
-                "@typescript-eslint/eslint-plugin": "^2.6.0",
-                "@typescript-eslint/parser": "^2.6.0",
-                "eslint-import-resolver-typescript": "^2.0.0"
+            devDependencies: {
+                '@typescript-eslint/eslint-plugin': '^2.6.0',
+                '@typescript-eslint/parser': '^2.6.0',
+                'eslint-import-resolver-typescript': '^2.0.0',
             },
-        })
+        });
     }
 
     return packageInfo;
-}
+};
 
-const GenESLintConfig = (usedMemory: UsedMemoryType, context: GenerateContext): Promise<PackageInfo> => {
-    return new Promise(async (resolve) => {
+const GenESLintConfig = (
+    usedMemory: UsedMemoryType,
+    context: GenerateContext
+): Promise<PackageInfo> =>
+    new Promise(async resolve => {
         let count = 2;
         const onTaskEnd = () => {
-            count --;
-            count === 0 && resolve(BuildESLintPackageInfo(usedMemory))
-        }
+            count--;
+            count === 0 && resolve(BuildESLintPackageInfo(usedMemory));
+        };
 
-        const targetPath1 = path.resolve(context.targetPath, `./.eslintrc${context.suffix}.js`);
-        if(!context.forceCover && fs.existsSync(targetPath1)) {
+        const targetPath1 = path.resolve(
+            context.targetPath,
+            `./.eslintrc${context.suffix}.js`
+        );
+        if (!context.forceCover && fs.existsSync(targetPath1)) {
             const answer = await ConfirmCoverPrompt(path.basename(targetPath1));
-            !answer.confirm && Exit(); 
+            !answer.confirm && Exit();
         }
 
         ParseRender(
@@ -109,11 +123,14 @@ const GenESLintConfig = (usedMemory: UsedMemoryType, context: GenerateContext): 
             usedMemory,
             onTaskEnd
         );
-    
-        const targetPath2 = path.resolve(context.targetPath, `./.eslintignore${context.suffix}`);
-        if(!context.forceCover && fs.existsSync(targetPath2)) {
+
+        const targetPath2 = path.resolve(
+            context.targetPath,
+            `./.eslintignore${context.suffix}`
+        );
+        if (!context.forceCover && fs.existsSync(targetPath2)) {
             const answer = await ConfirmCoverPrompt(path.basename(targetPath2));
-            !answer.confirm && Exit(); 
+            !answer.confirm && Exit();
         }
 
         ParseRender(
@@ -122,7 +139,6 @@ const GenESLintConfig = (usedMemory: UsedMemoryType, context: GenerateContext): 
             usedMemory,
             onTaskEnd
         );
-    })
-}
+    });
 
 export default GenESLintConfig;

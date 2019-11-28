@@ -30,16 +30,29 @@
     "@types/inquirer": "^6.5.0",
     "@types/mocha": "^5.2.7",
     "@types/node": "^12.7.4",
+    "@typescript-eslint/eslint-plugin": "^2.6.0",
+    "@typescript-eslint/parser": "^2.6.0",
     "chai": "^4.2.0",
+    "eslint": "^6.6.0",
+    "eslint-config-airbnb-base": "^14.0.0",
+    "eslint-import-resolver-typescript": "^2.0.0",
+    "eslint-plugin-import": "^2.18.2",
+    "eslint-plugin-prettier": "^3.1.1",
+    "eslint-plugin-promise": "^4.1.1",
+    "husky": "^2.3.0",
+    "lint-staged": "^8.1.7",
     "mocha": "^6.2.0",
+    "prettier-eslint-cli": "^4.7.1",
     "ts-node": "^8.3.0",
     "typescript": "^3.6.2"
   },
   "scripts": {
-    "test": "mocha --require ts-node/register 'test/**/*.{ts,tsx}' -t 5000",
     "build": "tsc --build",
-    "watch": "tsc --watch",
-    "prepublishOnly": "npm run test && npm run build"
+    "format": "prettier-eslint '/Users/cuijianwei/WebstormProjects/myproject/hasaki-cli/src/**/*.{ts,tsx}' --write",
+    "lint": "eslint src --ext .jsx --ext .js --ext .tsx --ext .ts --cache --fix",
+    "prepublishOnly": "npm run test && npm run build",
+    "test": "mocha --require ts-node/register 'test/**/*.{ts,tsx}' -t 5000",
+    "watch": "tsc --watch"
   },
   "repository": {
     "type": "git",
@@ -51,5 +64,24 @@
   "bugs": {
     "url": "https://github.com/JohnApache/hasaki-cli/issues"
   },
-  "homepage": "https://github.com/JohnApache/hasaki-cli#readme"
+  "homepage": "https://github.com/JohnApache/hasaki-cli#readme",
+  "lint-staged": {
+    "src/**/*.{ts,tsx}": [
+      "prettier-eslint 'src/**/*.{ts,tsx}' --write",
+      "git add"
+    ]
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
+  },
+  "prettier": {
+    "printWidth": 80,
+    "tabWidth": 4,
+    "semi": true,
+    "singleQuote": true,
+    "trailingComma": "es5",
+    "proseWrap": "preserve"
+  }
 }
