@@ -58,7 +58,11 @@
     "type": "git",
     "url": "git+https://github.com/JohnApache/hasaki-cli.git"
   },
-  "keywords": [],
+  "keywords": [
+    "hasaki-cli",
+    "cli",
+    "init-project"
+  ],
   "author": "JohnApache",
   "license": "MIT",
   "bugs": {
