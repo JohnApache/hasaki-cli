@@ -78,7 +78,7 @@ const BuildESLintPackageInfo = (usedMemory: UsedMemoryType): PackageInfo => {
     }
 
     if (useReact && !useTs) {
-        packageInfo = _.merge(packageInfo, { devDependencies: { '@dking/eslint-config-react': '^0.0.2' }});
+        packageInfo = _.merge(packageInfo, { devDependencies: { '@dking/eslint-config-react': '^0.0.3' }});
     }
 
     if (!useReact && useTs) {
