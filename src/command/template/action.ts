@@ -4,6 +4,10 @@ import {
     UpdateTemplates,
     ResetTemplates,
 } from '../../config/template';
+
+import { Exit } from '../../common';
+import { ErrorLog, SuccessLog } from '../../common/log';
+import { CheckTemplate } from '../../common/template';
 import {
     AddTemplatePrompt,
     DeleteTemplatePrompt,
@@ -12,21 +16,8 @@ import {
     ResetTemplatePrompt,
 } from './prompt';
 
-import { Exit } from '../../common';
-import { ErrorLog, SuccessLog } from '../../common/log';
-import { CheckTemplate } from '../../common/template';
-
-type ActionOptions = {
-    list?: boolean;
-    add?: boolean;
-    update?: boolean;
-    delete?: boolean;
-    clear?: boolean;
-    reset?: boolean;
-};
-
 const ListAction = async (): Promise<void> => {
-    const templates = GetTemplates();
+    const templates = await GetTemplates();
     console.table(templates);
 };
 
@@ -34,7 +25,7 @@ const AddAction = async (): Promise<void> => {
     const answer = await AddTemplatePrompt();
     const templates = GetTemplates();
     templates.unshift({
-        templateName: answer.templateName,
+        templateName : answer.templateName,
         remoteAddress: answer.remoteAddress,
     });
     UpdateTemplates(templates);
@@ -52,7 +43,7 @@ const UpdateAction = async (): Promise<void> => {
     const newTemplates = templates.map(v => {
         if (v.templateName === answer.updateItem.templateName) {
             return {
-                templateName: answer.templateName,
+                templateName : answer.templateName,
                 remoteAddress: answer.remoteAddress,
             };
         }
@@ -101,7 +92,7 @@ const ResetAction = async (): Promise<void> => {
     console.log('cancel reset operation.');
 };
 
-const TemplateAction = async (command: Command): Promise<void> => {
+const TemplateAction = (command: Command): Promise<void> => {
     const options = command.opts();
     const usedOptions = Object.keys(options).filter(v => options[v]);
     if (usedOptions.length > 1) {

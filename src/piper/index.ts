@@ -29,7 +29,7 @@ export const FileCleanner = (...cleanItem: string[]): Promise<void> =>
 export const FilePiper = (
     source: string,
     target: string,
-    parseOption: ParseOption
+    parseOption: ParseOption,
 ): Promise<void> =>
     new Promise((resolve, reject) => {
         const {
@@ -70,12 +70,12 @@ export const FilePiper = (
                                 screenPath,
                                 targetFile,
                                 parseData,
-                                onTaskEnd
+                                onTaskEnd,
                             );
                         },
                         () => {
                             Copy(screenPath, targetFile, onTaskEnd);
-                        }
+                        },
                     );
                 });
             });

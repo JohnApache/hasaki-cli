@@ -8,7 +8,7 @@ type TransferRule = {
 
 const CreateTransferStation = (
     rootPath: string,
-    transferRule: TransferRule
+    transferRule: TransferRule,
 ) => {
     const { parseExclude, parseInclude } = transferRule;
     const AllParseExclude = DefaultExclude.concat(parseExclude);
@@ -22,8 +22,8 @@ const CreateTransferStation = (
 
     const TransferStation = (
         targetFile: string,
-        renderCb?: () => void,
-        copyCb?: () => void
+        renderCb?: ()=> void,
+        copyCb?: ()=> void,
     ) => {
         if (IsParseExclude(targetFile)) {
             copyCb && copyCb();

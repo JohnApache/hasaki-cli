@@ -1,10 +1,12 @@
 import path from 'path';
 import fs from 'fs';
-import _ from 'lodash';
 import ParseRender from '../../../../piper/parseRender';
-import { UsedMemoryType, PackageInfo, GenerateContext } from '../../type';
+import {
+    UsedMemoryType, PackageInfo, GenerateContext,
+} from '../../type';
 import { ConfirmCoverPrompt } from '../../prompt';
 import { Exit } from '../../../../common';
+import _ from 'lodash';
 
 const BuildRollupPackageInfo = (usedMemory: UsedMemoryType): PackageInfo => {
     let packageInfo = {
@@ -13,12 +15,12 @@ const BuildRollupPackageInfo = (usedMemory: UsedMemoryType): PackageInfo => {
             'watch:rollup': 'rollup --watch',
         },
         devDependencies: {
-            rollup: '^1.21.4',
-            'rollup-plugin-commonjs': '^10.1.0',
+            rollup                      : '^1.21.4',
+            'rollup-plugin-commonjs'    : '^10.1.0',
             'rollup-plugin-node-resolve': '^5.2.0',
-            'rollup-plugin-terser': '^5.1.2',
-            '@rollup/plugin-json': '^4.0.0',
-            '@rollup/plugin-replace': '^2.2.1',
+            'rollup-plugin-terser'      : '^5.1.2',
+            '@rollup/plugin-json'       : '^4.0.0',
+            '@rollup/plugin-replace'    : '^2.2.1',
         },
     };
 
@@ -28,11 +30,11 @@ const BuildRollupPackageInfo = (usedMemory: UsedMemoryType): PackageInfo => {
     if (useBabel) {
         packageInfo = _.merge(packageInfo, {
             devDependencies: {
-                '@babel/cli': '^7.5.5',
-                '@babel/core': '^7.5.5',
+                '@babel/cli'                     : '^7.5.5',
+                '@babel/core'                    : '^7.5.5',
                 '@babel/plugin-transform-runtime': '^7.5.5',
-                '@babel/preset-env': '^7.5.5',
-                'rollup-plugin-babel': '^4.3.3',
+                '@babel/preset-env'              : '^7.5.5',
+                'rollup-plugin-babel'            : '^4.3.3',
             },
         });
     }
@@ -40,7 +42,7 @@ const BuildRollupPackageInfo = (usedMemory: UsedMemoryType): PackageInfo => {
     if (useTs) {
         packageInfo = _.merge(packageInfo, {
             devDependencies: {
-                typescript: '^3.6.4',
+                typescript                 : '^3.6.4',
                 'rollup-plugin-typescript2': '^0.24.3',
             },
         });
@@ -51,11 +53,11 @@ const BuildRollupPackageInfo = (usedMemory: UsedMemoryType): PackageInfo => {
 
 const GenRollupConfig = async (
     usedMemory: UsedMemoryType,
-    context: GenerateContext
+    context: GenerateContext,
 ): Promise<PackageInfo> => {
     const targetPath = path.resolve(
         context.targetPath,
-        `./rollup.config${context.suffix}.js`
+        `./rollup.config${ context.suffix }.js`,
     );
     if (!context.forceCover && fs.existsSync(targetPath)) {
         const answer = await ConfirmCoverPrompt(path.basename(targetPath));
@@ -68,7 +70,7 @@ const GenRollupConfig = async (
             usedMemory,
             () => {
                 resolve(BuildRollupPackageInfo(usedMemory));
-            }
+            },
         );
     });
 };

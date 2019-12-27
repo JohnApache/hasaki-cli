@@ -1,7 +1,7 @@
 import { ScreenRule, IsMatchRules } from './analyse';
 
 const CreateScreener = (rootPath: string, screenRule: ScreenRule) => {
-    const { include = [], exclude = [] } = screenRule;
+    const { include = [], exclude = []} = screenRule;
     const IsInclude = (targetPath: string): boolean =>
         IsMatchRules(rootPath, targetPath, include);
 
@@ -10,7 +10,7 @@ const CreateScreener = (rootPath: string, screenRule: ScreenRule) => {
 
     const Screener = (
         targetFile: string,
-        callback?: (targetDir: string) => void
+        callback?: (targetDir: string)=> void,
     ): void => {
         if (IsExclude(targetFile)) return;
         if (IsInclude(targetFile)) {

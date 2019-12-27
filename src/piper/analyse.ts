@@ -1,9 +1,25 @@
 import path from 'path';
 import fs from 'fs';
-import { Question } from 'inquirer';
 import { isRegExp } from 'util';
 import { ErrorLog } from '../common/log';
 import { Exit } from '../common';
+import { Question } from 'inquirer';
+
+type AnalyseResult = {
+    question?: Array<Question>;
+    parseInclude?: MatchRules;
+    parseExclude?: MatchRules;
+    ignore?: MatchRules;
+    screener?: (parseData: Record<string, any>)=> ScreenRule;
+};
+
+const Analyse = (configFilePath: string): AnalyseResult => {
+    let result: AnalyseResult = {};
+    if (fs.existsSync(configFilePath) && fs.statSync(configFilePath).isFile()) {
+        result = require(configFilePath);
+    }
+    return result;
+};
 
 export type Rule = {
     path?: string;
@@ -15,7 +31,7 @@ export type MatchRules = Array<Rule | RegExp>;
 export const IsMatchRules = (
     rootPath: string,
     targetPath: string,
-    matchRules: MatchRules
+    matchRules: MatchRules,
 ): boolean => {
     const result = matchRules.some(reg => {
         if (isRegExp(reg)) {
@@ -41,22 +57,6 @@ export const IsMatchRules = (
 export type ScreenRule = {
     exclude?: MatchRules;
     include?: MatchRules;
-};
-
-type AnalyseResult = {
-    question?: Array<Question>;
-    parseInclude?: MatchRules;
-    parseExclude?: MatchRules;
-    ignore?: MatchRules;
-    screener?: (parseData: Record<string, any>) => ScreenRule;
-};
-
-const Analyse = (configFilePath: string): AnalyseResult => {
-    let result: AnalyseResult = {};
-    if (fs.existsSync(configFilePath) && fs.statSync(configFilePath).isFile()) {
-        result = require(configFilePath);
-    }
-    return result;
 };
 
 export default Analyse;

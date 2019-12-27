@@ -16,9 +16,13 @@ const createGitArgs = (option: CloneOptions): Array<string> => {
         depth = 1,
         dest = process.cwd(),
     } = option;
-    const args = ['clone', repo, dest];
+    const args = [
+        'clone',
+        repo,
+        dest,
+    ];
     if (shallow) {
-        args.push('--depth', `${depth}`);
+        args.push('--depth', `${ depth }`);
     }
     args.push('-b', branch, '--single-branch');
     return args;
@@ -33,9 +37,7 @@ const clone = (option: CloneOptions): Promise<void> =>
                 console.log(' ');
                 console.error('git clone failed!', 'status:', status);
                 console.log(args);
-                return reject(
-                    new Error(`git clone failed with status ${status}`)
-                );
+                return reject(new Error(`git clone failed with status ${ status }`));
             }
             resolve();
         });

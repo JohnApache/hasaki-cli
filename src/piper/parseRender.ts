@@ -1,20 +1,20 @@
-import ejs from 'ejs';
 import fs from 'fs';
 import path from 'path';
 import Copy from './copy';
 import { MakeDirs } from './utils';
+import ejs from 'ejs';
 
 const ParseRender = (
     sourcePath: string,
     targetPath: string,
     parseData: Record<string, any>,
-    callback?: () => void
+    callback?: ()=> void,
 ) => {
     ejs.renderFile(
         sourcePath,
         parseData,
         {
-            _with: false,
+            _with     : false,
             localsName: 'locals',
         },
         (err, data) => {
@@ -28,7 +28,7 @@ const ParseRender = (
             }
             fs.writeFileSync(targetPath, data);
             callback && callback();
-        }
+        },
     );
 };
 

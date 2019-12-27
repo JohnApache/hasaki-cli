@@ -1,5 +1,5 @@
-import inquirer, { Question, Answers } from 'inquirer';
 import { GetTemplates, Template } from '../../config/template';
+import inquirer, { Question, Answers } from 'inquirer';
 
 interface AddPromptAnswers extends Answers {
     templateName: string;
@@ -28,16 +28,16 @@ interface ResetPromptAnswers extends Answers {
 export const CreatePrompt = (questions: Question[]): Promise<any> =>
     inquirer.prompt(questions);
 
-export const AddTemplatePrompt = async (): Promise<AddPromptAnswers> => {
+export const AddTemplatePrompt = (): Promise<AddPromptAnswers> => {
     const question = [
         {
-            type: 'input',
-            name: 'templateName',
+            type   : 'input',
+            name   : 'templateName',
             message: 'what is the template local name?',
-            filter(input: string) {
+            filter (input: string) {
                 return input.trim();
             },
-            validate(input: string) {
+            validate (input: string) {
                 if (input.length === 0) return false;
                 const templates = GetTemplates();
                 if (templates.some(t => t.templateName === input)) {
@@ -47,13 +47,13 @@ export const AddTemplatePrompt = async (): Promise<AddPromptAnswers> => {
             },
         },
         {
-            type: 'input',
-            name: 'remoteAddress',
+            type   : 'input',
+            name   : 'remoteAddress',
             message: 'what is the template remote address?',
-            filter(input: string) {
+            filter (input: string) {
                 return input.trim();
             },
-            validate(input: string): boolean {
+            validate (input: string): boolean {
                 return input.length > 0;
             },
         },
@@ -62,60 +62,58 @@ export const AddTemplatePrompt = async (): Promise<AddPromptAnswers> => {
     return CreatePrompt(question);
 };
 
-export const DeleteTemplatePrompt = async (): Promise<DeletePromptAnswers> => {
+export const DeleteTemplatePrompt = (): Promise<DeletePromptAnswers> => {
     const question = [
         {
-            type: 'checkbox',
-            name: 'deleteItems',
+            type   : 'checkbox',
+            name   : 'deleteItems',
             message: 'choose one item from the template list.',
-            choices() {
+            choices () {
                 return GetTemplates().map(t => ({
-                    name: t.templateName,
+                    name : t.templateName,
                     value: t,
                 }));
             },
         },
         {
-            type: 'confirm',
-            name: 'confirmDelete',
+            type   : 'confirm',
+            name   : 'confirmDelete',
             message: 'confirm delete the template from list?',
-            when(answers: Answers) {
+            when (answers: Answers) {
                 return answers.deleteItems && answers.deleteItems.length > 0;
             },
-            default: true,
+            'default': true,
         },
     ];
     return CreatePrompt(question);
 };
 
-export const UpdateTemplatePrompt = async (): Promise<UpdatePromptAnswers> => {
+export const UpdateTemplatePrompt = (): Promise<UpdatePromptAnswers> => {
     const question = [
         {
-            type: 'list',
-            name: 'updateItem',
+            type   : 'list',
+            name   : 'updateItem',
             message: 'choose one item from the template list.',
-            choices() {
+            choices () {
                 return GetTemplates().map(t => ({
-                    name: t.templateName,
+                    name : t.templateName,
                     value: t,
                 }));
             },
         },
         {
-            type: 'input',
-            name: 'templateName',
+            type   : 'input',
+            name   : 'templateName',
             message: 'what is the template local name?',
-            default(answers: Answers) {
+            default (answers: Answers) {
                 return answers.updateItem.templateName;
             },
-            filter(input: string) {
+            filter (input: string) {
                 return input.trim();
             },
-            validate(input: string, answer: Answers) {
+            validate (input: string, answer: Answers) {
                 if (input.length === 0) return false;
-                const templates = GetTemplates().filter(
-                    v => v.templateName !== answer.updateItem.templateName
-                );
+                const templates = GetTemplates().filter(v => v.templateName !== answer.updateItem.templateName);
                 if (templates.some(t => t.templateName === input)) {
                     return 'the current local name has been occupied!';
                 }
@@ -123,16 +121,16 @@ export const UpdateTemplatePrompt = async (): Promise<UpdatePromptAnswers> => {
             },
         },
         {
-            type: 'input',
-            name: 'remoteAddress',
+            type   : 'input',
+            name   : 'remoteAddress',
             message: 'what is the template remote address?',
-            default(answers: Answers) {
+            default (answers: Answers) {
                 return answers.updateItem.remoteAddress;
             },
-            filter(input: string) {
+            filter (input: string) {
                 return input.trim();
             },
-            validate(input: string): boolean {
+            validate (input: string): boolean {
                 return input.length > 0;
             },
         },
@@ -140,26 +138,26 @@ export const UpdateTemplatePrompt = async (): Promise<UpdatePromptAnswers> => {
     return CreatePrompt(question);
 };
 
-export const ClearTemplatePrompt = async (): Promise<ClearPromptAnswers> => {
+export const ClearTemplatePrompt = (): Promise<ClearPromptAnswers> => {
     const question = [
         {
-            type: 'confirm',
-            name: 'confirmClear',
-            message: 'confirm delete all template from list?',
-            default: false,
+            type     : 'confirm',
+            name     : 'confirmClear',
+            message  : 'confirm delete all template from list?',
+            'default': false,
         },
     ];
 
     return CreatePrompt(question);
 };
 
-export const ResetTemplatePrompt = async (): Promise<ResetPromptAnswers> => {
+export const ResetTemplatePrompt = (): Promise<ResetPromptAnswers> => {
     const question = [
         {
-            type: 'confirm',
-            name: 'confirmReset',
-            message: 'confirm reset templates list?',
-            default: false,
+            type     : 'confirm',
+            name     : 'confirmReset',
+            message  : 'confirm reset templates list?',
+            'default': false,
         },
     ];
     return CreatePrompt(question);

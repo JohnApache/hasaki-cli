@@ -2,7 +2,7 @@ import fs from 'fs';
 import path from 'path';
 
 export const MakeDirs = (dirs: string): void => {
-    const mkdirs = (dir: string, callback?: () => void) => {
+    const mkdirs = (dir: string, callback?: ()=> void) => {
         if (fs.existsSync(dir)) {
             callback && callback();
             return;

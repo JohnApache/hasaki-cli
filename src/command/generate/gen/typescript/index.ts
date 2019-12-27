@@ -1,7 +1,9 @@
 import path from 'path';
 import fs from 'fs';
 import ParseRender from '../../../../piper/parseRender';
-import { UsedMemoryType, PackageInfo, GenerateContext } from '../../type';
+import {
+    UsedMemoryType, PackageInfo, GenerateContext,
+} from '../../type';
 import { ConfirmCoverPrompt } from '../../prompt';
 import { Exit } from '../../../../common';
 
@@ -12,7 +14,7 @@ const BuildTSPackageInfo = (): PackageInfo => {
             'watch:ts': 'tsc --watch',
         },
         devDependencies: {
-            typescript: '^3.6.4',
+            typescript   : '^3.6.4',
             '@types/node': '^12.7.5',
         },
     };
@@ -22,11 +24,11 @@ const BuildTSPackageInfo = (): PackageInfo => {
 
 const GenTSConfig = async (
     usedMemory: UsedMemoryType,
-    context: GenerateContext
+    context: GenerateContext,
 ): Promise<PackageInfo> => {
     const targetPath = path.resolve(
         context.targetPath,
-        `tsconfig${context.suffix}.json`
+        `tsconfig${ context.suffix }.json`,
     );
     if (!context.forceCover && fs.existsSync(targetPath)) {
         const answer = await ConfirmCoverPrompt(path.basename(targetPath));
@@ -39,7 +41,7 @@ const GenTSConfig = async (
             usedMemory,
             () => {
                 resolve(BuildTSPackageInfo());
-            }
+            },
         );
     });
 };

@@ -1,7 +1,7 @@
 import { CommanderStatic, Command } from 'commander';
+import CheckVersion from '../../version';
 import InstallOption from './option';
 import InstallAction from './action';
-import CheckVersion from '../../version';
 
 const InstallCommand = (program: CommanderStatic): CommanderStatic => {
     const command = program.command('install <remoteAddress>');

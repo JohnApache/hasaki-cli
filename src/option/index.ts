@@ -1,6 +1,7 @@
 import { CommanderStatic } from 'commander';
 
 const UseOption = (program: CommanderStatic): CommanderStatic => program;
+
 // program
 // .option(
 //     '-d, --out-dir <dirname>',

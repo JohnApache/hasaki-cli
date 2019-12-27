@@ -9,7 +9,7 @@ export type Template = {
 export const GetTemplates = (): Template[] => {
     const templateFilePath = path.resolve(
         __dirname,
-        '../../assets/template.json'
+        '../../assets/template.json',
     );
     const buffer = fs.readFileSync(templateFilePath);
     const json = buffer.toString();
@@ -20,7 +20,7 @@ export const GetTemplates = (): Template[] => {
 export const UpdateTemplates = (templates: Template[]): void => {
     const templateFilePath = path.resolve(
         __dirname,
-        '../../assets/template.json'
+        '../../assets/template.json',
     );
     fs.writeFileSync(templateFilePath, JSON.stringify(templates, null, 2));
 };
@@ -28,11 +28,11 @@ export const UpdateTemplates = (templates: Template[]): void => {
 export const ResetTemplates = (): void => {
     const templateFilePath = path.resolve(
         __dirname,
-        '../../assets/template.json'
+        '../../assets/template.json',
     );
     const templateBakFilePath = path.resolve(
         __dirname,
-        '../../assets/template.json.bak'
+        '../../assets/template.json.bak',
     );
     const buffer = fs.readFileSync(templateBakFilePath);
     fs.writeFileSync(templateFilePath, buffer);

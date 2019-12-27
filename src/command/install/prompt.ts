@@ -7,16 +7,16 @@ interface ProjectPromptAnswers extends Answers {
 export const CreatePrompt = (questions: Array<Question>): Promise<any> =>
     inquirer.prompt(questions);
 
-export const ProjectNamePrompt = async (): Promise<ProjectPromptAnswers> => {
+export const ProjectNamePrompt = (): Promise<ProjectPromptAnswers> => {
     const question = [
         {
-            type: 'input',
-            name: 'projectName',
+            type   : 'input',
+            name   : 'projectName',
             message: 'what is the project name?',
-            filter(input: string) {
+            filter (input: string) {
                 return input.trim();
             },
-            validate(input: string) {
+            validate (input: string) {
                 return input.length > 0;
             },
         },

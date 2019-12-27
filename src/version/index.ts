@@ -1,14 +1,23 @@
 import { exec } from 'child_process';
 import chalk from 'chalk';
+
 // import os from 'os';
 import { GetPackageInfo } from '../common/package';
 
 const CompareVersion = (
     biggerVersion: string,
-    smallerVersion: string
+    smallerVersion: string,
 ): boolean => {
-    const [v10 = 0, v11 = 0, v12 = 0] = biggerVersion.split('.');
-    const [v20 = 0, v21 = 0, v22 = 0] = smallerVersion.split('.');
+    const [
+        v10 = 0,
+        v11 = 0,
+        v12 = 0,
+    ] = biggerVersion.split('.');
+    const [
+        v20 = 0,
+        v21 = 0,
+        v22 = 0,
+    ] = smallerVersion.split('.');
     if (v10 !== v20) return v10 > v20;
     if (v11 !== v21) return v11 > v21;
     if (v12 !== v22) return v12 > v22;
@@ -18,7 +27,7 @@ const CompareVersion = (
 const CheckVersion = (): void => {
     const packageInfo = GetPackageInfo();
     exec(
-        `npm info ${packageInfo.name} version`,
+        `npm info ${ packageInfo.name } version`,
         (err: Error | null, stdout: string) => {
             if (err) {
                 console.log(err);
@@ -27,17 +36,9 @@ const CheckVersion = (): void => {
             const remoteVersion = stdout.trim();
             const currentVersion = packageInfo.version;
             if (CompareVersion(remoteVersion, currentVersion)) {
-                console.log(
-                    `Update available: ${chalk.gray(
-                        currentVersion
-                    )} -> ${chalk.greenBright.bold(
-                        remoteVersion
-                    )}, run ${chalk.greenBright.bold(
-                        `npm install ${packageInfo.name} -g`
-                    )} to update!`
-                );
+                console.log(`Update available: ${ chalk.gray(currentVersion) } -> ${ chalk.greenBright.bold(remoteVersion) }, run ${ chalk.greenBright.bold(`npm install ${ packageInfo.name } -g`) } to update!`);
             }
-        }
+        },
     );
 };
 

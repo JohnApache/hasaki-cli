@@ -1,20 +1,23 @@
 import chalk from 'chalk';
 import dgit from '@dking/dgit';
-import ProgressBar from 'progress';
 
 import CreateLoading from '../../loading';
 
+import { Exit } from '../../common';
 import { PasswordPrompt } from './prompt';
 import { ActionOptions } from './type';
-import { Exit } from '../../common';
+import ProgressBar from 'progress';
+
+
+const MAX_TEXT_LENGTH = 30;
 
 const TextEllipsis = (text: string, maxLen: number): string =>
-    (text.length >= maxLen ? `${text.slice(0, maxLen)}...` : text);
+    (text.length >= maxLen ? `${ text.slice(0, maxLen) }...` : text);
 
 export const DownloadHandle = async (
     repo: string,
     dest: string,
-    options: ActionOptions
+    options: ActionOptions,
 ): Promise<void> => {
     const { username, token } = options;
     let { password } = options;
@@ -23,9 +26,7 @@ export const DownloadHandle = async (
         password = await PasswordPrompt(username);
     }
 
-    const ld = CreateLoading(
-        `downloading template from remote ${chalk.blue.underline(repo)} ...`
-    );
+    const ld = CreateLoading(`downloading template from remote ${ chalk.blue.underline(repo) } ...`);
 
     let bar: ProgressBar;
     try {
@@ -39,35 +40,33 @@ export const DownloadHandle = async (
             },
             dest,
             {
-                log: false,
+                log          : false,
                 parallelLimit: 10,
             },
             {
-                beforeLoadTree() {
+                beforeLoadTree () {
                     ld.start();
                 },
-                afterLoadTree() {
+                afterLoadTree () {
                     ld.succeed('load remote repo tree succeed! ');
                 },
-                onResolved(status) {
+                onResolved (status) {
                     const green = '\u001b[42m \u001b[0m';
                     const red = '\u001b[41m \u001b[0m';
                     bar = new ProgressBar(
                         '  DOWNLOAD |:bar| :current/:total :percent elapsed: :elapseds eta: :eta :file, done.',
                         {
-                            total: status.totalCount,
-                            width: 50,
-                            complete: green,
+                            total     : status.totalCount,
+                            width     : 50,
+                            complete  : green,
                             incomplete: red,
-                        }
+                        },
                     );
                 },
-                onProgress(_, node) {
-                    bar.tick({
-                        file: TextEllipsis(node.path, 30),
-                    });
+                onProgress (_, node) {
+                    bar.tick({ file: TextEllipsis(node.path, MAX_TEXT_LENGTH) });
                 },
-            }
+            },
         );
 
         ld.succeed('dowload template success!');

@@ -9,7 +9,7 @@ const Exit = (): void => {
 };
 
 const UnknownCommand = (cmdName: string): void => {
-    console.log(`${chalk.red('Unknown command')} ${chalk.yellow(cmdName)}.`);
+    console.log(`${ chalk.red('Unknown command') } ${ chalk.yellow(cmdName) }.`);
 };
 
 const packageInfo = GetPackageInfo();
@@ -20,7 +20,7 @@ UseOption(program);
 UseCommand(program);
 
 program.on('command:*', (cmdObj = []) => {
-    const [cmd] = cmdObj;
+    const [ cmd ] = cmdObj;
     if (cmd) {
         program.outputHelp();
         UnknownCommand(cmd);

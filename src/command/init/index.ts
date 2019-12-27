@@ -1,7 +1,7 @@
 import { CommanderStatic, Command } from 'commander';
+import CheckVersion from '../../version';
 import InitAction from './action';
 import InitOption from './option';
-import CheckVersion from '../../version';
 
 const InitCommand = (program: CommanderStatic): void => {
     const command = program.command('init <projectName>').alias('i');

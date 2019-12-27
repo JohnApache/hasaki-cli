@@ -3,24 +3,24 @@ import fs from 'fs';
 
 import CreateLoading from '../../loading';
 
-import { ActionOptions } from './type';
 import { FileCleanner } from '../../piper';
 import { Exit } from '../../common';
-import { ConfirmDeletePrompt } from './prompt';
 import { TEMPLATE_REPO_TMP_DIRNAME } from '../../config/definition';
+import { ConfirmDeletePrompt } from './prompt';
+import { ActionOptions } from './type';
 
 export const BeforeInitHandle = async (
     projectName: string,
-    options: ActionOptions
+    options: ActionOptions,
 ): Promise<void> => {
     const targetPath = path.resolve(
         process.cwd(),
         options.outDir || '',
-        projectName
+        projectName,
     );
     const tmpRepoPath = path.resolve(
         process.cwd(),
-        options.config || TEMPLATE_REPO_TMP_DIRNAME
+        options.config || TEMPLATE_REPO_TMP_DIRNAME,
     );
     if (fs.existsSync(tmpRepoPath)) {
         const ld = CreateLoading('clean tmp template gitrepo ...');

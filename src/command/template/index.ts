@@ -6,7 +6,7 @@ const TemplateCommand = (program: CommanderStatic): CommanderStatic => {
     const command = program.command('template').alias('t');
     TemplateOption(command)
         .description('show inner templates config.')
-        .action(async (cmd: Command) => {
+        .action((cmd: Command) => {
             TemplateAction(cmd);
         });
     return program;

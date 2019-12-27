@@ -1,17 +1,17 @@
 import path from 'path';
-import { Question } from 'inquirer';
 import chalk from 'chalk';
-import { CreatePrompt } from './prompt';
-import { ActionOptions } from './type';
 import { ErrorLog } from '../../common/log';
 import { Exit } from '../../common';
 import { TEMPLATE_CONFIG_FILENAME } from '../../config/definition';
 import Analyse from '../../piper/analyse';
 import CreateLoading from '../../loading';
 import { FilePiper } from '../../piper';
+import { ActionOptions } from './type';
+import { CreatePrompt } from './prompt';
+import { Question } from 'inquirer';
 
 const RepoPromptHandle = async (
-    questions: Array<Question>
+    questions: Array<Question>,
 ): Promise<object> => {
     let parseData: object = {};
     if (questions.length > 0) {
@@ -23,7 +23,7 @@ const RepoPromptHandle = async (
 export const RepoPipeHandle = async (
     source: string,
     dest: string,
-    option: ActionOptions
+    option: ActionOptions,
 ): Promise<void> => {
     const configName = option.config || '';
     if (path.isAbsolute(configName)) {
@@ -32,7 +32,7 @@ export const RepoPipeHandle = async (
     }
     const configFilePath = path.resolve(
         source,
-        configName || TEMPLATE_CONFIG_FILENAME
+        configName || TEMPLATE_CONFIG_FILENAME,
     );
     const analyseResult = Analyse(configFilePath);
 
@@ -52,9 +52,7 @@ export const RepoPipeHandle = async (
     const parseData = await RepoPromptHandle(question);
     const screenRule = screener(parseData);
 
-    const ld = CreateLoading(
-        `tmp repo pipe to ${chalk.blue.underline(dest)}...`
-    );
+    const ld = CreateLoading(`tmp repo pipe to ${ chalk.blue.underline(dest) }...`);
     try {
         ld.start();
         if (option.exclude) {

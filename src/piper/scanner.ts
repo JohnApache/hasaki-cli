@@ -10,7 +10,7 @@ const CreateScanner = (rootPath: string, ignore: MatchRules) => {
 
     const Scanner = (
         targetDir: string,
-        callback?: (filePath: string) => void
+        callback?: (filePath: string)=> void,
     ): void => {
         if (IsIgnore(targetDir)) return;
 
@@ -25,7 +25,7 @@ const CreateScanner = (rootPath: string, ignore: MatchRules) => {
         if (stat.isDirectory()) {
             const files = fs.readdirSync(targetDir);
             files.forEach(filename => {
-                const filepath = `${targetDir}/${filename}`;
+                const filepath = `${ targetDir }/${ filename }`;
                 const sstat = fs.statSync(filepath);
                 if (sstat.isFile() && !IsIgnore(filepath)) {
                     callback && callback(filepath);
